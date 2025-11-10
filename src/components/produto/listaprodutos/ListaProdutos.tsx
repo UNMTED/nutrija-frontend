@@ -1,36 +1,41 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SyncLoader } from "react-spinners";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 import { buscar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
+import CardProduto from "../cardproduto/CardProduto";
 
-function ListaProdutos() {
-    const navigate = useNavigate();
+interface Props {
+    limits?: { sm?: number; md?: number; lg?: number; xl?: number };
+    query?: string;
+    add: () => void;
+}
 
+export default function ListaProdutos({ limits, query = "", add }: Props) {
+    const [expanded, setExpanded] = useState(false);
+    const [limit, setLimit] = useState<number>(3);
+    const [produtos, setProdutos] = useState<Produto[]>([]); // <- inicial como array
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const [produtos, setProdutos] = useState<Produto[]>([]);
-
     const { usuario, handleLogout } = useContext(AuthContext);
+    const navigate = useNavigate();
     const token = usuario.token;
-
-    const retornar = useCallback(() => {
-        navigate("/");
-    }, [navigate]);
 
     useEffect(() => {
         if (token === "") {
             ToastAlerta("Você precisa estar logado!", "info");
-            retornar();
+            navigate("/");
         }
-    }, [token, retornar]);
+    }, [token, navigate]);
 
     const buscarProdutos = useCallback(async () => {
         try {
             setIsLoading(true);
-            await buscar("/produtos", setProdutos, {
+            const q = query?.trim();
+            const url = q
+                ? `/produtos/nome/${encodeURIComponent(q)}`
+                : "/produtos";
+            await buscar(url, setProdutos, {
                 headers: { Authorization: token },
             });
         } catch (error: any) {
@@ -38,39 +43,74 @@ function ListaProdutos() {
         } finally {
             setIsLoading(false);
         }
-    }, [token, handleLogout, setIsLoading]);
+    }, [token, handleLogout, query]);
 
     useEffect(() => {
         buscarProdutos();
-    }, [produtos.length, buscarProdutos]);
+    }, [buscarProdutos]);
+
+    const cfg = useMemo(
+        () => ({
+            sm: limits?.sm ?? 4,
+            md: limits?.md ?? 6,
+            lg: limits?.lg ?? 8,
+            xl: limits?.xl ?? 12,
+        }),
+        [limits]
+    );
+
+    useEffect(() => {
+        function calcLimit() {
+            const w = window.innerWidth;
+            if (w >= 1024) setLimit(cfg.xl);
+            else if (w >= 768) setLimit(cfg.lg);
+            else if (w >= 640) setLimit(cfg.md);
+            else setLimit(cfg.sm);
+        }
+
+        calcLimit();
+        window.addEventListener("resize", calcLimit);
+        return () => window.removeEventListener("resize", calcLimit);
+    }, [cfg]);
+
+    const visible = expanded ? produtos : produtos.slice(0, limit);
 
     return (
-        <>
-            {isLoading && (
-                <div className="flex justify-center w-full my-8">
-                    <SyncLoader size={32} />
-                </div>
-            )}
-
-            <div className="flex justify-center w-full my-4">
-                <div className="container flex flex-col">
-                    {!isLoading && produtos.length === 0 && (
-                        <span className="text-3xl text-center my-8">
-                            Nenhum Produto foi encontrado!
-                        </span>
-                    )}
-
-                    <div
-                        className="grid grid-cols-1 md:grid-cols-2 
-                                    lg:grid-cols-3 gap-8"
+        <section>
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg md:text-2xl text-gray-700">
+                    Os mais pedidos
+                </h2>
+                <div>
+                    <button className="mr-2 md:mr-10 text-sm text-nutri-green-dark hover:underline">
+                        Adicionar
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setExpanded((s) => !s)}
+                        className="text-sm text-nutri-green-dark hover:underline"
+                        aria-expanded={expanded}
                     >
-                        {produtos.map((produtos) => (
-                            <div>{produtos.nome}</div>
-                        ))}
-                    </div>
+                        {expanded
+                            ? "Mostrar menos"
+                            : `Ver todos (${produtos.length})`}
+                    </button>
                 </div>
             </div>
-        </>
+
+            {isLoading ? (
+                <div className="text-center py-8">Carregando...</div>
+            ) : (
+                <div className="px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {visible.map((prod) => (
+                        <CardProduto
+                            key={prod.id}
+                            produto={prod}
+                            add={add}
+                        />
+                    ))}
+                </div>
+            )}
+        </section>
     );
 }
-export default ListaProdutos;
