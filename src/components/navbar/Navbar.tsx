@@ -1,5 +1,5 @@
 import React, { useContext, useState, type ReactNode } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { ToastAlerta } from "../../utils/ToastAlerta";
 
@@ -72,12 +72,13 @@ export const NavBar: React.FC = () => {
                     <nav className="hidden lg:flex lg:items-center lg:gap-3">
                         {links.map((l) =>
                             l.label === "Sair" ? (
-                                <span
+                                <Link
+                                    to=""
                                     onClick={logout}
-                                    className="hover:cursor-pointer"
+                                    className={linkBase}
                                 >
                                     Sair
-                                </span>
+                                </Link>
                             ) : (
                                 <NavLink
                                     key={l.to}
@@ -110,12 +111,13 @@ export const NavBar: React.FC = () => {
                     <div className="flex flex-col gap-2">
                         {links.map((l) =>
                             l.label === "Sair" ? (
-                                <span
+                                <Link
+                                    to=""
                                     onClick={logout}
-                                    className="hover:cursor-pointer"
+                                    className={linkBase}
                                 >
                                     Sair
-                                </span>
+                                </Link>
                             ) : (
                                 <NavLink
                                     key={l.to}
