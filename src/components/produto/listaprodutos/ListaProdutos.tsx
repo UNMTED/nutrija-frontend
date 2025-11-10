@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SyncLoader } from "react-spinners";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -11,7 +11,7 @@ function ListaProdutos() {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [produtos, setProtudos] = useState<Produto[]>([]);
+    const [produtos, setProdutos] = useState<Produto[]>([]);
 
     const { usuario, handleLogout } = useContext(AuthContext);
     const token = usuario.token;
@@ -21,27 +21,24 @@ function ListaProdutos() {
             ToastAlerta("Você precisa estar logado!", "info");
             navigate("/");
         }
-    }, [token]);
+    }, [token, navigate]);
 
-    useEffect(() => {
-        buscarProdutos();
-    }, [produtos.length]);
-
-    async function buscarProdutos() {
+    const buscarProdutos = useCallback(async () => {
         try {
             setIsLoading(true);
-
-            await buscar("/produtos", setProtudos, {
+            await buscar("/produtos", setProdutos, {
                 headers: { Authorization: token },
             });
         } catch (error: any) {
-            if (error.toString().includes("401")) {
-                handleLogout();
-            }
+            if (error.toString().includes("401")) handleLogout();
         } finally {
             setIsLoading(false);
         }
-    }
+    }, [token, handleLogout, setIsLoading]);
+
+    useEffect(() => {
+        buscarProdutos();
+    }, [produtos.length, buscarProdutos]);
 
     return (
         <>

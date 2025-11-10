@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import {
+    useCallback,
+    useEffect,
+    useState,
+    type ChangeEvent,
+    type FormEvent,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import type { Usuario } from "../../models/Usuario";
@@ -21,15 +27,15 @@ function Cadastro() {
         foto: "",
     });
 
+    const retornar = useCallback(() => {
+        navigate("/");
+    }, [navigate]);
+
     useEffect(() => {
         if (usuario.id !== 0) {
             retornar();
         }
-    }, [usuario]);
-
-    function retornar() {
-        navigate("/");
-    }
+    }, [usuario, retornar]);
 
     function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
         setUsuario({

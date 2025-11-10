@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SyncLoader } from "react-spinners";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -21,27 +21,24 @@ function ListaCategorias() {
             ToastAlerta("Você precisa estar logado!", "info");
             navigate("/");
         }
-    }, [token]);
+    }, [token, navigate]);
 
-    useEffect(() => {
-        buscarCategorias();
-    }, [categorias.length]);
-
-    async function buscarCategorias() {
+    const buscarCategorias = useCallback(async () => {
         try {
             setIsLoading(true);
-
             await buscar("/categorias", setCategorias, {
                 headers: { Authorization: token },
             });
         } catch (error: any) {
-            if (error.toString().includes("401")) {
-                handleLogout();
-            }
+            if (error.toString().includes("401")) handleLogout();
         } finally {
             setIsLoading(false);
         }
-    }
+    }, [token, handleLogout, setIsLoading]);
+
+    useEffect(() => {
+        buscarCategorias();
+    }, [categorias.length, buscarCategorias]);
 
     return (
         <>
