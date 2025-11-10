@@ -16,13 +16,16 @@ function ListaCategorias() {
     const { usuario, handleLogout } = useContext(AuthContext);
     const token = usuario.token;
 
+    const retornar = useCallback(() => {
+        navigate("/");
+    }, [navigate]);
+
     useEffect(() => {
         if (token === "") {
             ToastAlerta("Você precisa estar logado!", "info");
-            navigate("/");
+            retornar();
         }
-    }, [token, navigate]);
-
+    }, [token, retornar]);
     const buscarCategorias = useCallback(async () => {
         try {
             setIsLoading(true);

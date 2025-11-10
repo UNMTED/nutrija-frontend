@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, type ReactNode, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { createContext, type ReactNode, useEffect, useState } from "react";
 import type UsuarioLogin from "../models/UsuarioLogin";
 import { login } from "../services/Service";
 import { ToastAlerta } from "../utils/ToastAlerta";
@@ -18,17 +18,38 @@ interface AuthProviderProps {
 
 export const AuthContext = createContext({} as AuthContextProps);
 
+const defaultUsuario: UsuarioLogin = {
+    id: 0,
+    nome: "",
+    usuario: "",
+    senha: "",
+    foto: "",
+    token: "",
+};
+
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [usuario, setUsuario] = useState<UsuarioLogin>({
-        id: 0,
-        nome: "",
-        usuario: "",
-        senha: "",
-        foto: "",
-        token: "",
+    const [usuario, setUsuario] = useState<UsuarioLogin>(() => {
+        try {
+            const raw = localStorage.getItem("usuario");
+            return raw ? (JSON.parse(raw) as UsuarioLogin) : defaultUsuario;
+        } catch {
+            return defaultUsuario;
+        }
     });
 
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        try {
+            if (usuario && usuario.token) {
+                localStorage.setItem("usuario", JSON.stringify(usuario));
+            } else {
+                localStorage.removeItem("usuario");
+            }
+        } catch {
+            console.error("erro");
+        }
+    }, [usuario]);
 
     async function handleLogin(usuarioLogin: UsuarioLogin) {
         setIsLoading(true);
@@ -37,19 +58,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
             ToastAlerta("Usuário foi autenticado com sucesso!", "sucesso");
         } catch (error) {
             ToastAlerta("Os dados do Usuário estão inconsistentes!", "erro");
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     }
 
     function handleLogout() {
-        setUsuario({
-            id: 0,
-            nome: "",
-            usuario: "",
-            senha: "",
-            foto: "",
-            token: "",
-        });
+        setUsuario(defaultUsuario);
+        localStorage.removeItem("usuario");
     }
 
     return (

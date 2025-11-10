@@ -43,7 +43,6 @@ export default function Login() {
                     className=""
                     onSubmit={login}
                 >
-                    <h2 className="">Entrar</h2>
                     <div className="flex flex-col w-full">
                         <label htmlFor="usuario">Usuário</label>
                         <input
