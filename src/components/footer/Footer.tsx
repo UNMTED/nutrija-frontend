@@ -1,13 +1,53 @@
-import { useContext, type ReactNode } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import {
+    FacebookLogoIcon,
+    InstagramLogoIcon,
+    LinkedinLogoIcon,
+} from "@phosphor-icons/react";
 
-export default function Footer() {
-    const { usuario } = useContext(AuthContext);
-
-    let component: ReactNode;
-
-    if (usuario.token !== "") {
-        component = <footer>Footer</footer>;
-    }
-    return <>{component}</>;
+function Footer() {
+    const data = new Date().getFullYear();
+    return (
+        <div className="w-ful text-gray-600 flex justify-center py-4 border-t border-gray-300 mt-10">
+            <div className="container flex flex-col items-center p-1">
+                <p className="text-sm font-bold">NutriJá | Copyright: {data}</p>
+                <p className="text-lg">Acesse nossas redes sociais</p>
+                <div className="flex gap-2">
+                    <a
+                        href="https://www.linkedin.com/in/seu_usuario"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <LinkedinLogoIcon
+                            size={46}
+                            weight="bold"
+                        />
+                    </a>
+                    <a
+                        href="https://www.instagram.com/seu_usuario"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <InstagramLogoIcon
+                            size={46}
+                            weight="bold"
+                        />
+                    </a>
+                    <a
+                        href="https://www.facebook.com/seu_usuario"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <FacebookLogoIcon
+                            size={46}
+                            weight="bold"
+                        />
+                    </a>
+                </div>
+                <p className="text-xs">
+                    &copy; Todos os direitos reservados a UNMUTED{" "}
+                </p>
+            </div>
+        </div>
+    );
 }
+export default Footer;

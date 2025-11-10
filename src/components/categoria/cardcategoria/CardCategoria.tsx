@@ -6,7 +6,7 @@ interface CardCategoriaProps {
 export default function CardCategoria({ categoria }: CardCategoriaProps) {
     return (
         <>
-            <div className="w-[150px] mx-2 md:w-[w-190] bg-white rounded-2xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-md border border-white/20 group">
+            <div className="w-[120px] mx-2 md:w-[w-150] bg-white rounded-2xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-md border border-white/20 group">
                 {/* brilho estático ao hover (simula o shine) */}
                 <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-transparent via-white/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
@@ -16,7 +16,7 @@ export default function CardCategoria({ categoria }: CardCategoriaProps) {
                     {/* badge */}
 
                     {/* imagem - gradiente placeholder; troque por <img /> se quiser */}
-                    <div className="w-full h-24 rounded-b-3xl bg-linear-to-br from-nutri-green-light to-nutri-green transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-[1.03]">
+                    <div className="w-full h-20 rounded-b-3xl bg-linear-to-br from-nutri-green-light to-nutri-green transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-[1.03]">
                         {/* se for imagem real:
                          */}
                         <img
@@ -28,7 +28,7 @@ export default function CardCategoria({ categoria }: CardCategoriaProps) {
 
                     {/* texto */}
                     <div className="flex flex-col gap-1 px-5">
-                        <p className="text-sm font-bold text-slate-900 transition-all duration-300 group-hover:text-nutri-green-dark">
+                        <p className="text-xs font-bold text-center text-slate-900 transition-all duration-300 group-hover:text-nutri-green-dark">
                             {categoria.nome}
                         </p>
                     </div>
@@ -37,7 +37,7 @@ export default function CardCategoria({ categoria }: CardCategoriaProps) {
                     <div className="mt-auto flex items-center justify-center pb-4 shadow-2xl">
                         <button
                             aria-label="add"
-                            className="w-7 h-7 rounded-full flex items-center justify-center text-white bg-nutri-green-dark transform scale-95 transition-all duration-300 group-hover:scale-100 group-hover:shadow-[0_0_0_6px_rgba(124,58,237,0.12)]"
+                            className="w-5 h-5 rounded-full flex items-center justify-center text-white bg-nutri-green-dark transform scale-95 transition-all duration-300 group-hover:scale-100 group-hover:shadow-[0_0_0_6px_rgba(124,58,237,0.12)]"
                         >
                             <svg
                                 className="w-4 h-4 mx-auto"
