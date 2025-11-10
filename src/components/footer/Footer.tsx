@@ -7,7 +7,7 @@ import {
 function Footer() {
     const data = new Date().getFullYear();
     return (
-        <div className="w-full text-white flex justify-center py-4 border-t border-white">
+        <div className="w-ful text-gray-600 flex justify-center py-4 border-t border-gray-300 mt-10">
             <div className="container flex flex-col items-center p-1">
                 <p className="text-sm font-bold">NutriJá | Copyright: {data}</p>
                 <p className="text-lg">Acesse nossas redes sociais</p>
