@@ -8,5 +8,7 @@
 }
 
 @theme {
-    --color-nutri-green: #ccff92;
+    --color-nutri-green-light: #ccff92;
+    --color-nutri-green: #88e31f;
+    --color-nutri-green-dark: #29a114;
 }

@@ -4,5 +4,6 @@ export interface Categoria {
     id: number;
     nome: string;
     descricao: string;
+    foto: string;
     produto?: Produto[] | null;
 }
