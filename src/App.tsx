@@ -7,6 +7,7 @@ import Login from "./pages/login/Login";
 
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/navbar/Navbar";
+import Cadastro from "./pages/cadastro/Cadastro";
 
 function App() {
     return (
@@ -24,6 +25,10 @@ function App() {
                             <Route
                                 path="/home"
                                 element={<Home />}
+                            />
+                            <Route
+                                path="/cadastro"
+                                element={<Cadastro />}
                             />
                         </Routes>
                     </div>
