@@ -156,7 +156,7 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
                 </div>
             )}
             <ModalConfirm
-                text={`Tem certeza que deseja excluir a produto ${produto?.nome}?`}
+                text={`Tem certeza que deseja excluir o produto ${produto?.nome}?`}
                 open={isModalOpen}
                 onConfirm={onConfirm}
                 onClose={() => setIsModalOpen(false)}

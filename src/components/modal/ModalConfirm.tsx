@@ -27,6 +27,7 @@ export default function ModalConfirm({
             contentStyle={{
                 borderRadius: "1rem",
                 padding: "0",
+                maxWidth: "30rem",
             }}
         >
             {
@@ -44,7 +45,7 @@ export default function ModalConfirm({
                             ×
                         </button>
 
-                        <div className="py-4">{text}</div>
+                        <div className="pt-8">{text}</div>
 
                         <div className="flex justify-end gap-2 mt-4">
                             <button
