@@ -5,7 +5,9 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 import { buscar, deletar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
+import Modal from "../../modal/Modal";
 import ModalConfirm from "../../modal/ModalConfirm";
+import DetalhesProdutoModal from "../../modal/modalproduto/ModalProduto";
 import CardProduto from "../cardproduto/CardProduto";
 
 interface Props {
@@ -20,7 +22,9 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [produto, setProduto] = useState<Produto>();
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
+    const [isModalDetalhesOpen, setIsModalDetalhesOpen] =
+        useState<boolean>(false);
     const { usuario, handleLogout } = useContext(AuthContext);
 
     const navigate = useNavigate();
@@ -35,12 +39,13 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
 
     const abreModalConfirm = useCallback((produto: Produto) => {
         setProduto(produto);
-        setIsModalOpen(true);
+        setIsModalDeleteOpen(true);
     }, []);
 
-    const edit = (id: number) => {
-        console.log(id);
-    };
+    const abreModalDetalhes = useCallback((produto: Produto) => {
+        setProduto(produto);
+        setIsModalDetalhesOpen(true);
+    }, []);
 
     const buscarProdutos = useCallback(async () => {
         try {
@@ -72,7 +77,7 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
             } catch (err) {
                 ToastAlerta("Erro ao remover produto", "error");
             } finally {
-                setIsModalOpen(false);
+                setIsModalDeleteOpen(false);
                 setProduto(undefined);
             }
         },
@@ -150,17 +155,27 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
                             produto={prod}
                             remove={() => abreModalConfirm(prod)}
                             add={add}
-                            edit={() => edit(prod.id)}
+                            edit={() => console.log(prod)}
+                            detalhes={() => abreModalDetalhes(prod)}
                         />
                     ))}
                 </div>
             )}
             <ModalConfirm
                 text={`Tem certeza que deseja excluir o produto ${produto?.nome}?`}
-                open={isModalOpen}
+                open={isModalDeleteOpen}
                 onConfirm={onConfirm}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() => setIsModalDeleteOpen(false)}
             />
+            <Modal
+                open={isModalDetalhesOpen}
+                onClose={() => setIsModalDetalhesOpen(false)}
+            >
+                <DetalhesProdutoModal
+                    add={add}
+                    produto={produto!}
+                />
+            </Modal>
         </section>
     );
 }

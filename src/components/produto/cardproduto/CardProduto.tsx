@@ -6,12 +6,14 @@ interface CardProdutoProps {
     add: () => void;
     remove: () => void;
     edit: () => void;
+    detalhes: () => void;
 }
 export default function CardProduto({
     produto,
     add,
     remove,
     edit,
+    detalhes,
 }: CardProdutoProps) {
     return (
         <>
@@ -30,7 +32,10 @@ export default function CardProduto({
                         onClick={remove}
                     />
 
-                    <div className="w-full h-24 mb-2 rounded-b-2xl bg-nutri-green-light transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-[1.03]">
+                    <div
+                        onClick={detalhes}
+                        className="w-full h-24 mb-2 rounded-b-2xl bg-nutri-green-light transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-[1.03]"
+                    >
                         <img
                             src={produto.foto}
                             alt={produto.nome}
