@@ -1,13 +1,13 @@
 import React from "react";
 import { type Produto } from "../../../models/Produto";
 
-interface DetalhesProdutoModalProps {
+interface ProdutoModalProps {
   isOpen: boolean;
   onClose: () => void;
   produto: Produto | null;
 }
 
-const DetalhesProdutoModal: React.FC<DetalhesProdutoModalProps> = ({
+const ProdutoModal: React.FC<ProdutoModalProps> = ({
   isOpen,
   onClose,
   produto,
@@ -25,7 +25,7 @@ const DetalhesProdutoModal: React.FC<DetalhesProdutoModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all scale-100 opacity-100"
+        className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all scale-100 opacity-100"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
@@ -96,15 +96,16 @@ const DetalhesProdutoModal: React.FC<DetalhesProdutoModalProps> = ({
 
             <div className="pt-4">
               <button
-                className="w-full py-3 px-6 bg-indigo-600 text-white text-lg font-bold rounded-xl hover:bg-indigo-700 transition duration-300 ease-in-out shadow-lg transform hover:scale-[1.01]"
+                type="button"
                 onClick={() =>
                   console.log(`Produto ${produto.nome} selecionado!`)
                 }
                 disabled={produto.quantidade <= 0}
+                className="select-none rounded-lg bg-blue-500 w-full py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
               >
                 {produto.quantidade > 0
-                  ? " Adicionar ao Carrinho"
-                  : " Produto Indisponível"}
+                  ? "🛒 Adicionar ao Carrinho"
+                  : "❌ Produto Indisponível"}
               </button>
             </div>
           </div>
@@ -114,4 +115,4 @@ const DetalhesProdutoModal: React.FC<DetalhesProdutoModalProps> = ({
   );
 };
 
-export default DetalhesProdutoModal;
+export default ProdutoModal;

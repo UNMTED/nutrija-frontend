@@ -11,39 +11,27 @@ import Cadastro from "./pages/cadastro/Cadastro";
 import Inicio from "./pages/inicio/Inicio";
 
 function App() {
-    return (
-        <>
-            <AuthProvider>
-                <ToastContainer />
-                <BrowserRouter>
-                    <Navbar />
-                    <div className="max-w-7xl mx-auto p-2">
-                        <div className="min-h-[80vh]">
-                            <Routes>
-                                <Route
-                                    path="/"
-                                    element={<Inicio />}
-                                />
-                                <Route
-                                    path="/login"
-                                    element={<Login />}
-                                />
-                                <Route
-                                    path="/home"
-                                    element={<Home />}
-                                />
-                                <Route
-                                    path="/cadastro"
-                                    element={<Cadastro />}
-                                />
-                            </Routes>
-                        </div>
-                    </div>
-                    <Footer />
-                </BrowserRouter>
-            </AuthProvider>
-        </>
-    );
+  return (
+    <>
+      <AuthProvider>
+        <ToastContainer />
+        <BrowserRouter>
+          <Navbar />
+          <div className="max-w-7xl mx-auto p-2">
+            <div className="min-h-[80vh]">
+              <Routes>
+                <Route path="/" element={<Inicio />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/cadastro" element={<Cadastro />} />
+              </Routes>
+            </div>
+          </div>
+          <Footer />
+        </BrowserRouter>
+      </AuthProvider>
+    </>
+  );
 }
 
 export default App;
