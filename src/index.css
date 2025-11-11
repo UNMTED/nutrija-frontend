@@ -12,3 +12,7 @@
     --color-nutri-green: #88e31f;
     --color-nutri-green-dark: #29a114;
 }
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #ccff92 transparent;
+}

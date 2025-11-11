@@ -6,8 +6,9 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 
 import "react-toastify/dist/ReactToastify.css";
-import Cadastro from "./pages/cadastro/Cadastro";
 import Navbar from "./components/navbar/Navbar";
+import Cadastro from "./pages/cadastro/Cadastro";
+import Inicio from "./pages/inicio/Inicio";
 
 function App() {
     return (
@@ -15,12 +16,16 @@ function App() {
             <AuthProvider>
                 <ToastContainer />
                 <BrowserRouter>
+                    <Navbar />
                     <div className="max-w-7xl mx-auto p-2">
-                        <Navbar />
                         <div className="min-h-[80vh]">
                             <Routes>
                                 <Route
                                     path="/"
+                                    element={<Inicio />}
+                                />
+                                <Route
+                                    path="/login"
                                     element={<Login />}
                                 />
                                 <Route

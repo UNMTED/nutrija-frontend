@@ -9,8 +9,8 @@ function Footer() {
     return (
         <div className="w-ful text-gray-600 flex justify-center py-4 border-t border-gray-300 mt-10">
             <div className="container flex flex-col items-center p-1">
-                <p className="text-sm font-bold">NutriJá | Copyright: {data}</p>
-                <p className="text-lg">Acesse nossas redes sociais</p>
+                <p className="text-xs font-bold">NutriJá | Copyright: {data}</p>
+                <p>Acesse nossas redes sociais</p>
                 <div className="flex gap-2">
                     <a
                         href="https://www.linkedin.com/in/seu_usuario"
@@ -18,7 +18,7 @@ function Footer() {
                         rel="noopener noreferrer"
                     >
                         <LinkedinLogoIcon
-                            size={46}
+                            size={32}
                             weight="bold"
                         />
                     </a>
@@ -28,7 +28,7 @@ function Footer() {
                         rel="noopener noreferrer"
                     >
                         <InstagramLogoIcon
-                            size={46}
+                            size={32}
                             weight="bold"
                         />
                     </a>
@@ -38,7 +38,7 @@ function Footer() {
                         rel="noopener noreferrer"
                     >
                         <FacebookLogoIcon
-                            size={46}
+                            size={32}
                             weight="bold"
                         />
                     </a>

@@ -89,7 +89,11 @@ export default function ListaCategorias({ limits }: Props) {
                     >
                         {expanded
                             ? "Mostrar menos"
-                            : `Ver todos (${categorias.length})`}
+                            : `Ver todos ${
+                                  categorias.length >= limit
+                                      ? "(" + categorias.length + ")"
+                                      : ""
+                              }`}
                     </button>
                 </div>
             </div>

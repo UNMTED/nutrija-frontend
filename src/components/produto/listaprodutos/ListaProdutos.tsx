@@ -93,7 +93,11 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
                     >
                         {expanded
                             ? "Mostrar menos"
-                            : `Ver todos (${produtos.length})`}
+                            : `Ver todos ${
+                                  produtos.length >= limit
+                                      ? "(" + produtos.length + ")"
+                                      : ""
+                              }`}
                     </button>
                 </div>
             </div>
