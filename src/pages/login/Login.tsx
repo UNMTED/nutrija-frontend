@@ -1,100 +1,42 @@
-import {
-    useContext,
-    useEffect,
-    useState,
-    type ChangeEvent,
-    type FormEvent,
-} from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
-import { AuthContext } from "../../contexts/AuthContext";
-import type UsuarioLogin from "../../models/UsuarioLogin";
+import AuthCard from "../../components/FormAuth/AuthForm";
 
 export default function Login() {
-    const navigate = useNavigate();
+  return (
+    <div className="min-h-screen flex flex-col">
+  
+     
+      <div className="flex-1 flex items-center justify-center relative px-4">
+        <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          {/* Coluna Esquerda - Texto e Formulário */}
+          <div className="flex flex-col items-center lg:items-start">
+            <div className="text-center lg:text-left mb-8">
+              {/* Texto com espaçamento Figma (line-height: 50px, letter-spacing: 4%) */}
+              <div className="text-3xl " style={{ letterSpacing: '4%', lineHeight: '50px' }}>
+                <span className="font-normal text-nutri-gray">
+                  Bem-vindo de volta ao sabor <span className="font-bold text-nutri-green"> que te faz bem.</span>
+                </span>
+              </div>
+          
+            </div>
 
-    const { usuario, handleLogin, isLoading } = useContext(AuthContext);
+            {/* Formulário AuthCard  */}
+            <div className="w-full max-w-xs">
+              <AuthCard />
+            </div>
+          </div>
 
-    const [usuarioLogin, setUsuarioLogin] = useState<UsuarioLogin>(
-        {} as UsuarioLogin
-    );
+          {/* Coluna Direita - Imagem */}
+          <div className="hidden lg:block">
+            <img 
+              src="https://ik.imagekit.io/yljuedpj1/Imagem%20sanduiche.png?updatedAt=1762805309348" 
+              alt="Sanduíche saudável" 
+              className="w-full mx-auto object-contain"
+  style={{ maxWidth: '30rem', height: '35rem' }}
+            />
+          </div>
+        </div>
+      </div>
 
-    useEffect(() => {
-        if (usuario.token !== "") {
-            navigate("/home");
-        }
-    }, [usuario, navigate]);
-
-    function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
-        setUsuarioLogin({
-            ...usuarioLogin,
-            [e.target.name]: e.target.value,
-        });
-    }
-
-    function login(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        handleLogin(usuarioLogin);
-    }
-    return (
-        <>
-            <main>
-                <form
-                    className=""
-                    onSubmit={login}
-                >
-                    <div className="flex flex-col w-full">
-                        <label htmlFor="usuario">Usuário</label>
-                        <input
-                            type="text"
-                            id="usuario"
-                            name="usuario"
-                            placeholder="Usuario"
-                            className="border-2 border-slate-700 rounded p-2"
-                            value={usuarioLogin.usuario}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                atualizarEstado(e)
-                            }
-                        />
-                    </div>
-                    <div className="flex flex-col w-full">
-                        <label htmlFor="senha">Senha</label>
-                        <input
-                            type="password"
-                            id="senha"
-                            name="senha"
-                            placeholder="Senha"
-                            className="border-2 border-slate-700 rounded p-2"
-                            value={usuarioLogin.senha}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                atualizarEstado(e)
-                            }
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="rounded flex justify-center
-                                    w-1/2 py-2"
-                    >
-                        {isLoading ? (
-                            <ClipLoader
-                                color="#ffffff"
-                                size={24}
-                            />
-                        ) : (
-                            <span>Entrar</span>
-                        )}
-                    </button>
-
-                    <hr className="border-slate-800 w-full" />
-
-                    <p>
-                        Ainda não tem uma conta?{" "}
-                        <Link to="/cadastro">Cadastre-se</Link>
-                    </p>
-                </form>
-            </main>
-            ;
-        </>
-    );
+    </div>
+  );
 }

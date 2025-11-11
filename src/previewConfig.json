@@ -1,0 +1,20 @@
+{
+  "DetalhesProdutoModal": {
+    "isOpen": true,
+    "produto": {
+      "id": 42,
+      "nome": "Super Whey Power Teste",
+      "preco": 129.9,
+      "descricao": "Simulação de descrição de produto para visualização rápida no VS Code.",
+      "quantidade": 15,
+      "foto": "https://via.placeholder.com/400",
+      "categoria": {
+        "nome": "Suplementos"
+      },
+      "usuario": {
+        "nome": "Usuário Admin"
+      }
+    },
+    "onClose": null
+  }
+}

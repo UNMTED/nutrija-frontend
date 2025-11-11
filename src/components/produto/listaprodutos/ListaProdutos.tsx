@@ -7,7 +7,7 @@ import { buscar, deletar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
 import Modal from "../../modal/Modal";
 import ModalConfirm from "../../modal/ModalConfirm";
-import DetalhesProdutoModal from "../../modal/modalproduto/ModalProduto";
+import DetalhesProdutoModal from "../../modal/produtomodal/ModalProduto";
 import CardProduto from "../cardproduto/CardProduto";
 
 interface Props {
@@ -144,7 +144,6 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
                     </button>
                 </div>
             </div>
-
             {isLoading ? (
                 <div className="text-center py-8">Carregando...</div>
             ) : (
@@ -157,6 +156,9 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
                             add={add}
                             edit={() => console.log(prod)}
                             detalhes={() => abreModalDetalhes(prod)}
+                            view={function (): void {
+                                throw new Error("Function not implemented.");
+                            }}
                         />
                     ))}
                 </div>
