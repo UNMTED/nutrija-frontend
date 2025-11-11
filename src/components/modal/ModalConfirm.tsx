@@ -26,13 +26,14 @@ export default function ModalConfirm({
             closeOnEscape={false}
             contentStyle={{
                 borderRadius: "1rem",
-                padding: "0",
+                padding: "10px",
+                minWidth: "20rem",
                 maxWidth: "30rem",
             }}
         >
             {
                 ((close: () => void) => (
-                    <div className="relative rounded-2xl p-6">
+                    <div className="relative rounded-2xl p-6=">
                         <button
                             type="button"
                             onClick={() => {
@@ -40,7 +41,7 @@ export default function ModalConfirm({
                                 onClose?.();
                             }}
                             aria-label="Fechar"
-                            className="absolute top-2 right-4 text-3xl ring-0"
+                            className="absolute top-0 right-0 text-3xl outline-0"
                         >
                             ×
                         </button>

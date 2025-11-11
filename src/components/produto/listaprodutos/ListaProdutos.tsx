@@ -67,7 +67,7 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
                     headers: { Authorization: token },
                 });
 
-                await buscarProdutos();
+                buscarProdutos();
                 ToastAlerta("Produto removido com sucesso", "sucesso");
             } catch (err) {
                 ToastAlerta("Erro ao remover produto", "error");
