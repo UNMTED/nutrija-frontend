@@ -1,10 +1,23 @@
+import { useContext, useEffect } from "react";
 import { FaMotorcycle, FaTruck } from "react-icons/fa";
 import { FiPlusCircle } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const heroImageURL =
     "https://ik.imagekit.io/yljuedpj1/Imagem%20Tela%20Apresenta%C3%A7%C3%A3o.png?updatedAt=1762805133474";
 
 const Inicio = () => {
+    const navigate = useNavigate();
+
+    const { usuario } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (usuario.token !== "") {
+            navigate("/home");
+        }
+    }, [usuario, navigate]);
+
     return (
         <>
             <main className="w-full py-16 md:py-24 overflow-x-hidden">
