@@ -19,7 +19,7 @@ export default function ModalConfirm({
 }: ModalProps) {
     return (
         <Popup
-            open={open} // controlado pelo pai
+            open={open}
             modal
             position={position}
             closeOnDocumentClick={false}

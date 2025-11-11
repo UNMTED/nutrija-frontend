@@ -8,12 +8,14 @@ import CardCategoria from "../cardcategoria/CardCategoria";
 
 interface Props {
     limits?: { sm?: number; md?: number; lg?: number; xl?: number };
+    buscarPorCategoria: (id: number) => void;
 }
 
-export default function ListaCategorias({ limits }: Props) {
+export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     const [expanded, setExpanded] = useState(false);
     const [limit, setLimit] = useState<number>(3);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
+    const [categoriaId, setCategoriaId] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { usuario, handleLogout } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -67,6 +69,16 @@ export default function ListaCategorias({ limits }: Props) {
         return () => window.removeEventListener("resize", calcLimit);
     }, [cfg]);
 
+    const handleBuscar = (id: number) => {
+        if (id === categoriaId) {
+            setCategoriaId(0);
+            buscarPorCategoria(0);
+        } else {
+            setCategoriaId(id);
+            buscarPorCategoria(id);
+        }
+    };
+
     const visible = expanded ? categorias : categorias.slice(0, limit);
 
     return (
@@ -107,7 +119,10 @@ export default function ListaCategorias({ limits }: Props) {
                             key={cat.id}
                             className="shrink-0"
                         >
-                            <CardCategoria categoria={cat} />
+                            <CardCategoria
+                                categoria={cat}
+                                buscar={() => handleBuscar(cat.id)}
+                            />
                         </div>
                     ))}
                 </div>
@@ -117,6 +132,7 @@ export default function ListaCategorias({ limits }: Props) {
                         <CardCategoria
                             key={cat.id}
                             categoria={cat}
+                            buscar={() => handleBuscar(cat.id)}
                         />
                     ))}
                 </div>

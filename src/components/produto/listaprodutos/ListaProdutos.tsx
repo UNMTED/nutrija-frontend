@@ -14,9 +14,15 @@ interface Props {
     limits?: { sm?: number; md?: number; lg?: number; xl?: number };
     query?: string;
     add: () => void;
+    categoriaId?: number | null;
 }
 
-export default function ListaProdutos({ limits, query = "", add }: Props) {
+export default function ListaProdutos({
+    limits,
+    query = "",
+    add,
+    categoriaId,
+}: Props) {
     const [expanded, setExpanded] = useState(false);
     const [limit, setLimit] = useState<number>(3);
     const [produtos, setProdutos] = useState<Produto[]>([]);
@@ -64,6 +70,25 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
         }
     }, [token, handleLogout, query]);
 
+    const buscarProdutosPorCategoria = useCallback(
+        async (catId: number) => {
+            try {
+                setIsLoading(true);
+                if (catId !== 0) {
+                    await buscar(`/produtos/categoria/${catId}`, setProdutos, {
+                        headers: { Authorization: token },
+                    });
+                } else {
+                    buscarProdutos();
+                }
+            } catch (error: any) {
+                if (error.toString().includes("401")) handleLogout();
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [token, handleLogout, buscarProdutos]
+    );
     const handleRemove = useCallback(
         async (produto: Produto | undefined) => {
             if (produto == undefined) return;
@@ -89,8 +114,12 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
     }, [handleRemove, produto]);
 
     useEffect(() => {
-        buscarProdutos();
-    }, [buscarProdutos]);
+        if (categoriaId != null) {
+            void buscarProdutosPorCategoria(categoriaId);
+        } else {
+            void buscarProdutos();
+        }
+    }, [categoriaId, buscarProdutos, buscarProdutosPorCategoria]);
 
     const cfg = useMemo(
         () => ({

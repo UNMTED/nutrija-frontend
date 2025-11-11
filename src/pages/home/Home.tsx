@@ -10,6 +10,7 @@ import { ToastAlerta } from "../../utils/ToastAlerta";
 export default function Home() {
     const { usuario } = useContext(AuthContext);
     const [produto, setProduto] = useState<number>(0);
+    const [categoriaId, setCategoriaId] = useState<number | null>(null);
 
     const navigate = useNavigate();
 
@@ -26,6 +27,10 @@ export default function Home() {
 
     function addProduto() {
         setProduto(produto + 1);
+    }
+
+    function buscarPorCategoria(id: number) {
+        setCategoriaId(id);
     }
 
     return (
@@ -69,10 +74,11 @@ export default function Home() {
                 </div>
 
                 <div className="flex flex-col gap-10 mt-10 md:gap-15 md:mt-15 lg:gap-20">
-                    <ListaCategorias />
+                    <ListaCategorias buscarPorCategoria={buscarPorCategoria} />
                     <ListaProdutos
                         query={debouncedQuery}
                         add={addProduto}
+                        categoriaId={categoriaId}
                     />
                 </div>
             </main>
