@@ -7,7 +7,7 @@ import { buscar, deletar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
 import Modal from "../../modal/Modal";
 import ModalConfirm from "../../modal/ModalConfirm";
-import DetalhesProdutoModal from "../../modal/produtomodal/ModalProduto";
+import DetalhesProdutoModal from "../../modal/detalhesprodutomodal/DetalhesProdutoModal";
 import CardProduto from "../cardproduto/CardProduto";
 
 interface Props {
@@ -156,9 +156,6 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
                             add={add}
                             edit={() => console.log(prod)}
                             detalhes={() => abreModalDetalhes(prod)}
-                            view={function (): void {
-                                throw new Error("Function not implemented.");
-                            }}
                         />
                     ))}
                 </div>
