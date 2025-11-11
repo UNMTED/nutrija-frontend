@@ -1,19 +1,42 @@
+import { PencilSimple, Trash } from "@phosphor-icons/react";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 import type { Categoria } from "../../../models/Categoria";
 
 interface CardCategoriaProps {
     categoria: Categoria;
     buscar: () => void;
+    remove: () => void;
+    edit: () => void;
 }
 export default function CardCategoria({
     categoria,
     buscar,
+    edit,
+    remove,
 }: CardCategoriaProps) {
+    const { usuario } = useContext(AuthContext);
+
     return (
         <>
             <div className="w-[120px] mx-2 md:w-[w-150] bg-white rounded-2xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-md border border-white/20 group">
-                <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-transparent via-white/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
                 <div className=" h-full flex flex-col gap-3 relative">
+                    {usuario.role === "admin" && (
+                        <PencilSimple
+                            size={28}
+                            weight="fill"
+                            className="absolute top-0 right-0 text-nutri-green-dark z-20 p-1 cursor-pointer"
+                            onClick={edit}
+                        />
+                    )}
+                    {usuario.role === "admin" && (
+                        <Trash
+                            size={28}
+                            weight="bold"
+                            className="absolute text-red-600 z-20 p-1 cursor-pointer"
+                            onClick={remove}
+                        />
+                    )}
                     <div className="w-full h-20 rounded-b-3xl bg-linear-to-br from-nutri-green-light to-nutri-green transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-[1.03]">
                         <img
                             src={categoria.foto}

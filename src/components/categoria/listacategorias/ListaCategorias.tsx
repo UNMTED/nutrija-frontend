@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Categoria } from "../../../models/Categoria";
-import { buscar } from "../../../services/Service";
+import { buscar, deletar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
+import ModalConfirm from "../../modal/ModalConfirm";
 import CardCategoria from "../cardcategoria/CardCategoria";
 
 interface Props {
@@ -16,7 +18,10 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     const [limit, setLimit] = useState<number>(3);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [categoriaId, setCategoriaId] = useState<number>(0);
+    const [categoria, setCategoria] = useState<Categoria>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
+
     const { usuario, handleLogout } = useContext(AuthContext);
     const navigate = useNavigate();
     const token = usuario.token;
@@ -40,6 +45,35 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
             setIsLoading(false);
         }
     }, [token, handleLogout]);
+
+    const abreModalConfirm = useCallback((categoria: Categoria) => {
+        setCategoria(categoria);
+        setIsModalDeleteOpen(true);
+    }, []);
+
+    const handleRemove = useCallback(
+        async (categoria: Categoria | undefined) => {
+            if (categoria == undefined) return;
+            try {
+                await deletar(`/categorias/${categoria.id}`, {
+                    headers: { Authorization: token },
+                });
+
+                buscarCategorias();
+                ToastAlerta("Categoria removida com sucesso", "sucesso");
+            } catch (err) {
+                ToastAlerta("Erro ao remover produto", "error");
+            } finally {
+                setIsModalDeleteOpen(false);
+                setCategoria(undefined);
+            }
+        },
+        [token, buscarCategorias]
+    );
+
+    const onConfirm = useCallback(() => {
+        void handleRemove(categoria);
+    }, [handleRemove, categoria]);
 
     useEffect(() => {
         buscarCategorias();
@@ -124,6 +158,8 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                             <CardCategoria
                                 categoria={cat}
                                 buscar={() => handleBuscar(cat.id)}
+                                remove={() => abreModalConfirm(cat)}
+                                edit={() => console.log(cat)}
                             />
                         </div>
                     ))}
@@ -135,10 +171,18 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                             key={cat.id}
                             categoria={cat}
                             buscar={() => handleBuscar(cat.id)}
+                            remove={() => abreModalConfirm(cat)}
+                            edit={() => console.log(cat)}
                         />
                     ))}
                 </div>
             )}
+            <ModalConfirm
+                text={`Tem certeza que deseja excluir a categoria ${categoria?.nome}?`}
+                open={isModalDeleteOpen}
+                onConfirm={onConfirm}
+                onClose={() => setIsModalDeleteOpen(false)}
+            />
         </section>
     );
 }

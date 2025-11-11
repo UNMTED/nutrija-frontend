@@ -1,5 +1,5 @@
-import { PencilSimple, Trash } from "@phosphor-icons/react";
-import { useContext } from "react";
+import { Heart, PencilSimple, Trash } from "@phosphor-icons/react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 
@@ -18,17 +18,25 @@ export default function CardProduto({
     detalhes,
 }: CardProdutoProps) {
     const { usuario } = useContext(AuthContext);
+    const [favorito, setFavorito] = useState<boolean>(false);
 
     return (
         <>
             <div className="w-[150px] md:w-[170px] lg:w-[190px] h-full bg-white rounded-xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-xl border border-white/20 group">
                 <div className="h-full flex flex-col relative">
-                    {usuario.role === "admin" && (
+                    {usuario.role === "admin" ? (
                         <PencilSimple
                             size={32}
                             weight="fill"
                             className="absolute top-0 right-0 text-nutri-green-dark z-20 p-1 cursor-pointer"
                             onClick={edit}
+                        />
+                    ) : (
+                        <Heart
+                            size={32}
+                            weight={favorito ? "fill" : "regular"}
+                            className="absolute top-0 right-0 text-red-500 z-20 p-1 cursor-pointer"
+                            onClick={() => setFavorito(!favorito)}
                         />
                     )}
                     {usuario.role === "admin" && (
