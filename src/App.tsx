@@ -11,7 +11,6 @@ import Cadastro from "./pages/cadastro/Cadastro";
 import Inicio from "./pages/inicio/Inicio";
 import Login from "./pages/login/Login";
 
-
 function App() {
 
     return (

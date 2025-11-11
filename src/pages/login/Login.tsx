@@ -1,6 +1,7 @@
 import AuthCard from "../../components/FormAuth/AuthForm";
 
 export default function Login() {
+
     return (
         <div className="flex flex-col">
             <div className="flex-1 flex items-start justify-center relative px-4 mt-20">
@@ -25,6 +26,7 @@ export default function Login() {
                                 </span>
                             </div>
                         </div>
+
 
                         {/* Formulário AuthCard  */}
                         <div className="w-full max-w-xs">

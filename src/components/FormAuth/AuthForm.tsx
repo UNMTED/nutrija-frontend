@@ -52,6 +52,7 @@ export default function AuthCard() {
         setUsuarioLogin({ ...usuarioLogin, [e.target.name]: e.target.value });
     }
 
+
     function login(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         handleLogin(usuarioLogin);
@@ -195,6 +196,7 @@ export default function AuthCard() {
                         )}
                     </button>
                 </form>
+
             </div>
 
             {/* Cadastro  */}
