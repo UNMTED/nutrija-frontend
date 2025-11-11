@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
-import { buscar } from "../../../services/Service";
+import { buscar, deletar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
+import ModalConfirm from "../../modal/ModalConfirm";
 import CardProduto from "../cardproduto/CardProduto";
 
 interface Props {
@@ -15,9 +17,12 @@ interface Props {
 export default function ListaProdutos({ limits, query = "", add }: Props) {
     const [expanded, setExpanded] = useState(false);
     const [limit, setLimit] = useState<number>(3);
-    const [produtos, setProdutos] = useState<Produto[]>([]); // <- inicial como array
+    const [produtos, setProdutos] = useState<Produto[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [produto, setProduto] = useState<Produto>();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const { usuario, handleLogout } = useContext(AuthContext);
+
     const navigate = useNavigate();
     const token = usuario.token;
 
@@ -27,6 +32,15 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
             navigate("/");
         }
     }, [token, navigate]);
+
+    const abreModalConfirm = useCallback((produto: Produto) => {
+        setProduto(produto);
+        setIsModalOpen(true);
+    }, []);
+
+    const edit = (id: number) => {
+        console.log(id);
+    };
 
     const buscarProdutos = useCallback(async () => {
         try {
@@ -44,6 +58,30 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
             setIsLoading(false);
         }
     }, [token, handleLogout, query]);
+
+    const handleRemove = useCallback(
+        async (produto: Produto | undefined) => {
+            if (produto == undefined) return;
+            try {
+                await deletar(`/produtos/${produto.id}`, {
+                    headers: { Authorization: token },
+                });
+
+                await buscarProdutos();
+                ToastAlerta("Produto removido com sucesso", "sucesso");
+            } catch (err) {
+                ToastAlerta("Erro ao remover produto", "error");
+            } finally {
+                setIsModalOpen(false);
+                setProduto(undefined);
+            }
+        },
+        [token, buscarProdutos]
+    );
+
+    const onConfirm = useCallback(() => {
+        void handleRemove(produto);
+    }, [handleRemove, produto]);
 
     useEffect(() => {
         buscarProdutos();
@@ -110,11 +148,19 @@ export default function ListaProdutos({ limits, query = "", add }: Props) {
                         <CardProduto
                             key={prod.id}
                             produto={prod}
+                            remove={() => abreModalConfirm(prod)}
                             add={add}
+                            edit={() => edit(prod.id)}
                         />
                     ))}
                 </div>
             )}
+            <ModalConfirm
+                text={`Tem certeza que deseja excluir a produto ${produto?.nome}?`}
+                open={isModalOpen}
+                onConfirm={onConfirm}
+                onClose={() => setIsModalOpen(false)}
+            />
         </section>
     );
 }

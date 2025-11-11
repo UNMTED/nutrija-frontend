@@ -13,7 +13,7 @@ interface Props {
 export default function ListaCategorias({ limits }: Props) {
     const [expanded, setExpanded] = useState(false);
     const [limit, setLimit] = useState<number>(3);
-    const [categorias, setCategorias] = useState<Categoria[]>([]); // <- inicial como array
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { usuario, handleLogout } = useContext(AuthContext);
     const navigate = useNavigate();
