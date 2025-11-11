@@ -103,8 +103,8 @@ const DetalhesProdutoModal: React.FC<DetalhesProdutoModalProps> = ({
                 disabled={produto.quantidade <= 0}
               >
                 {produto.quantidade > 0
-                  ? "🛒 Adicionar ao Carrinho"
-                  : "❌ Produto Indisponível"}
+                  ? " Adicionar ao Carrinho"
+                  : " Produto Indisponível"}
               </button>
             </div>
           </div>
