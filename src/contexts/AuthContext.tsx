@@ -24,6 +24,7 @@ const defaultUsuario: UsuarioLogin = {
     usuario: "",
     senha: "",
     foto: "",
+    role: "",
     token: "",
 };
 

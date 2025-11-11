@@ -1,4 +1,6 @@
 import { PencilSimple, Trash } from "@phosphor-icons/react";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 
 interface CardProdutoProps {
@@ -15,22 +17,28 @@ export default function CardProduto({
     edit,
     detalhes,
 }: CardProdutoProps) {
+    const { usuario } = useContext(AuthContext);
+
     return (
         <>
             <div className="w-[150px] md:w-[170px] lg:w-[190px] h-full bg-white rounded-xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-xl border border-white/20 group">
                 <div className="h-full flex flex-col relative">
-                    <PencilSimple
-                        size={32}
-                        weight="fill"
-                        className="absolute top-0 right-0 text-nutri-green-dark z-20 p-1 cursor-pointer"
-                        onClick={edit}
-                    />
-                    <Trash
-                        size={32}
-                        weight="bold"
-                        className="absolute text-red-600 z-20 p-1 cursor-pointer"
-                        onClick={remove}
-                    />
+                    {usuario.role === "admin" && (
+                        <PencilSimple
+                            size={32}
+                            weight="fill"
+                            className="absolute top-0 right-0 text-nutri-green-dark z-20 p-1 cursor-pointer"
+                            onClick={edit}
+                        />
+                    )}
+                    {usuario.role === "admin" && (
+                        <Trash
+                            size={32}
+                            weight="bold"
+                            className="absolute text-red-600 z-20 p-1 cursor-pointer"
+                            onClick={remove}
+                        />
+                    )}
 
                     <div
                         onClick={detalhes}
@@ -46,6 +54,7 @@ export default function CardProduto({
                     <div className="flex flex-col px-2">
                         <p className="text-center text-sm font-bold text-slate-900 transition-all duration-300 group-hover:text-nutri-green-dark">
                             {produto.nome}
+                            {usuario.role}
                         </p>
                     </div>
 

@@ -154,9 +154,11 @@ export default function ListaProdutos({
                     Os mais pedidos
                 </h2>
                 <div>
-                    <button className="mr-2 md:mr-10 text-sm text-nutri-green-dark hover:underline">
-                        Adicionar
-                    </button>
+                    {usuario.role === "admin" && (
+                        <button className="mr-2 md:mr-10 text-sm text-nutri-green-dark hover:underline">
+                            Adicionar
+                        </button>
+                    )}
                     <button
                         type="button"
                         onClick={() => setExpanded((s) => !s)}
