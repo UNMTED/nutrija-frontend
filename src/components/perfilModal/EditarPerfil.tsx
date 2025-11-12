@@ -149,7 +149,7 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
                         type="button"
                         onClick={onCancel}
 
-                        className="flex-1 py-2 sm:py-3 px-3 sm:px-4 bg-gray-100 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-200 transition-colors"
+                        className="flex-1 py-3 px-4 bg-gray-200 hover:bg-gray-400 rounded-lg"
 
                     >
                         Cancelar
@@ -157,9 +157,9 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
                     <button
                         type="submit"
 
-                        className="flex-1 py-2 sm:py-3 px-3 sm:px-4 bg-nutri-green text-white rounded-lg text-sm sm:text-base font-medium hover:bg-nutri-green-dark transition-colors"
+                        className="flex-1 py-3 px-4 bg-nutri-green hover:bg-nutri-green-dark text-white rounded-lg"
+                    >
 
-         >
                         Confirmar
                     </button>
                 </div>

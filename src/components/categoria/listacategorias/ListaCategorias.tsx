@@ -20,7 +20,9 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [categoriaId, setCategoriaId] = useState<number>(0);
   const [categoria, setCategoria] = useState<Categoria>();
+
   const [categoriaEdicao, setCategoriaEdicao] = useState<Categoria | null>(null);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
   const [isModalEditOpen, setIsModalEditOpen] = useState<boolean>(false);
@@ -54,6 +56,9 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     setIsModalDeleteOpen(true);
   }, []);
 
+
+  // função para abrir modal de edição
+
   const abreModalEdicao = useCallback((categoria: Categoria) => {
     setCategoriaEdicao(categoria);
     setIsModalEditOpen(true);
@@ -68,6 +73,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     [buscarPorCategoria, categoriaId]
   );
 
+
   const handleRemove = useCallback(
     async (categoria: Categoria | undefined) => {
       if (!categoria) return;
@@ -75,6 +81,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         await deletar(`/categorias/${categoria.id}`, {
           headers: { Authorization: token },
         });
+
         await buscarCategorias();
         ToastAlerta("Categoria removida com sucesso", "sucesso");
       } catch (err) {
@@ -88,12 +95,14 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     [token, buscarCategorias, setCategoria, handleBuscar]
   );
 
+
   const handleSaveCategoria = useCallback(
     async (categoriaAtualizada: Categoria) => {
       try {
         await atualizar(`/categorias`, categoriaAtualizada, setCategorias, {
           headers: { Authorization: token },
         });
+
         ToastAlerta("Categoria atualizada com sucesso", "sucesso");
         await buscarCategorias(); 
       } catch (error) {
@@ -102,6 +111,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     },
     [token, buscarCategorias]
   );
+
 
   const onConfirm = useCallback(() => {
     void handleRemove(categoria);
@@ -129,6 +139,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
       else if (w >= 640) setLimit(cfg.md);
       else setLimit(cfg.sm);
     }
+
     calcLimit();
     window.addEventListener("resize", calcLimit);
     return () => window.removeEventListener("resize", calcLimit);
@@ -167,7 +178,9 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
 
       {isLoading ? (
         <div className="text-center py-8">Carregando...</div>
+
       ) : (
+
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-4">
           {visible.map((cat) => (
             <div key={cat.id} className="shrink-0">
@@ -180,8 +193,10 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
             </div>
           ))}
         </div>
+
       )}
 
+ Stashed changes
       <ModalConfirm
         text={`Tem certeza que deseja excluir a categoria ${categoria?.nome}?`}
         open={isModalDeleteOpen}
@@ -189,6 +204,8 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         onClose={() => setIsModalDeleteOpen(false)}
       />
 
+
+Stashed changes
       <CategoriaModal
         isOpen={isModalEditOpen}
         onClose={() => setIsModalEditOpen(false)}
@@ -197,4 +214,5 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
       />
     </section>
   );
+
 }
