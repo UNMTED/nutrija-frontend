@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -9,6 +8,7 @@ import Modal from "../../modal/Modal";
 import ModalConfirm from "../../modal/ModalConfirm";
 import DetalhesProdutoModal from "../../modal/detalhesprodutomodal/DetalhesProdutoModal";
 import CardProduto from "../cardproduto/CardProduto";
+import ProdutoEditModal from "../../modal/produtoeditmodal/ProdutoEditModal";
 
 interface Props {
     limits?: { sm?: number; md?: number; lg?: number; xl?: number };
@@ -29,9 +29,11 @@ export default function ListaProdutos({
     const [limit, setLimit] = useState<number>(3);
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [produto, setProduto] = useState<Produto>();
+    const [produto, setProduto] = useState<Produto | undefined>();
     const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
     const [isModalDetalhesOpen, setIsModalDetalhesOpen] =
+        useState<boolean>(false);
+    const [isModalEditOpen, setIsModalEditOpen] =
         useState<boolean>(false);
     const { usuario, handleLogout } = useContext(AuthContext);
 
@@ -53,6 +55,11 @@ export default function ListaProdutos({
     const abreModalDetalhes = useCallback((produto: Produto) => {
         setProduto(produto);
         setIsModalDetalhesOpen(true);
+    }, []);
+
+    const abreModalEdit = useCallback((produto: Produto) => {
+        setProduto(produto);
+        setIsModalEditOpen(true);
     }, []);
 
     const buscarProdutos = useCallback(async () => {
@@ -191,18 +198,20 @@ export default function ListaProdutos({
                             produto={prod}
                             remove={() => abreModalConfirm(prod)}
                             add={add}
-                            edit={() => console.log(prod)}
+                            edit={() => abreModalEdit(prod)}
                             detalhes={() => abreModalDetalhes(prod)}
                         />
                     ))}
                 </div>
             )}
+            
             <ModalConfirm
                 text={`Tem certeza que deseja excluir o produto ${produto?.nome}?`}
                 open={isModalDeleteOpen}
                 onConfirm={onConfirm}
                 onClose={() => setIsModalDeleteOpen(false)}
             />
+            
             <Modal
                 open={isModalDetalhesOpen}
                 onClose={() => setIsModalDetalhesOpen(false)}
@@ -212,6 +221,15 @@ export default function ListaProdutos({
                     produto={produto!}
                 />
             </Modal>
+
+            {usuario.role === "admin" && produto && ( 
+                <ProdutoEditModal
+                    isOpen={isModalEditOpen}
+                    onClose={() => setIsModalEditOpen(false)}
+                    produto={produto}
+                    onUpdate={buscarProdutos}
+                />
+            )}
         </section>
     );
 }
