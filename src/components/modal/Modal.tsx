@@ -46,7 +46,7 @@ export default function Modal({
                                 onClose?.();
                             }}
                             aria-label="Fechar"
-                            className="absolute top-2 right-4 text-3xl cursor-pointer outline-0 z-10 w-8 h-8 rounded-full flex items-center justify-center text-gray-500 hover:text-nutri-green-dark hover:bg-gray-100"
+                            className="absolute top-1 right-1 lg:right-3 lg:top-2 text-3xl cursor-pointer outline-0 z-10 w-8 h-8 rounded-full flex items-center justify-center text-gray-500 hover:text-nutri-green-dark hover:bg-gray-100"
                         >
                             <svg
                                 className="w-5 h-5"
