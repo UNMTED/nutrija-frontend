@@ -41,8 +41,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
 
     useEffect(() => {
         if (token === "") {
-            ToastAlerta("Você precisa estar logado!", "info");
-            navigate("/");
+            navigate("/login");
         }
     }, [token, navigate]);
 
@@ -150,7 +149,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
 
     const cfg = useMemo(
         () => ({
-            sm: limits?.sm ?? 2,
+            sm: limits?.sm ?? 3,
             md: limits?.md ?? 3,
             lg: limits?.lg ?? 5,
             xl: limits?.xl ?? 9,
@@ -211,7 +210,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
             {isLoading ? (
                 <div className="text-center py-8">Carregando...</div>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-4">
+                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1 gap-y-4 sm:gap-4">
                     {visible.map((cat) => (
                         <div
                             key={cat.id}

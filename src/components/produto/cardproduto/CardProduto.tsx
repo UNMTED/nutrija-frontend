@@ -67,7 +67,7 @@ export default function CardProduto({
 
                     <div className="mt-auto flex items-center justify-center">
                         <div className="text-base px-2 font-extrabold text-slate-900 transition-colors duration-300 group-hover:text-nutri-green-dark">
-                            <span className="text-nutri-green-dark">R$</span>
+                            <span className="text-nutri-green-dark">R$ </span>
                             {Number(produto.preco)
                                 .toFixed(2)
                                 .toLocaleString()

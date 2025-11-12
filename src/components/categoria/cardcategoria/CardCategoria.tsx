@@ -19,7 +19,7 @@ export default function CardCategoria({
 
     return (
         <>
-            <div className="w-[120px] mx-2 md:w-[w-150] bg-white rounded-2xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-md border border-white/20 group">
+            <div className="h-full sm:w-full sm:mx-2 md:w-[w-150] bg-white rounded-2xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-md border border-white/20 group">
                 <div className=" h-full flex flex-col gap-3 relative">
                     {usuario.role === "admin" && (
                         <PencilSimple

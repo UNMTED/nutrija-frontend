@@ -5,7 +5,6 @@ import ListaCategorias from "../../components/categoria/listacategorias/ListaCat
 import ListaProdutos from "../../components/produto/listaprodutos/ListaProdutos";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useDebounce } from "../../hooks/useDebounce";
-import { ToastAlerta } from "../../utils/ToastAlerta";
 
 export default function Home() {
     const { usuario } = useContext(AuthContext);
@@ -19,7 +18,6 @@ export default function Home() {
 
     useEffect(() => {
         if (token === "") {
-            ToastAlerta("Você precisa estar logado!", "info");
             navigate("/login");
         }
     }, [token, navigate]);

@@ -15,6 +15,7 @@ interface EditarPerfilFormProps {
 }
 
 export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
+    const [fotoErro, setFotoErro] = useState<boolean>(false);
     const { usuario, handleLogout, atualizarUsuarioContext } =
         useContext(AuthContext);
     const [usuarioLogado, setUsuarioLogado] = useState<UsuarioLogin>(() => ({
@@ -50,6 +51,9 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
             else ToastAlerta("Erro ao atualizar usuário", "erro");
         }
     }
+    useEffect(() => {
+        setFotoErro(false);
+    }, [usuarioLogado.foto]);
 
     return (
         <form
@@ -64,10 +68,11 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
                     </label>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-nutri-green-light border-2 border-nutri-green-dark flex items-center justify-center overflow-hidden shrink-0">
-                            {usuarioLogado.foto ? (
+                            {usuarioLogado.foto && !fotoErro ? (
                                 <img
                                     src={usuarioLogado.foto}
                                     alt="Foto atual"
+                                    onError={() => setFotoErro(true)}
                                     className="w-full h-full object-cover rounded-full"
                                 />
                             ) : (
@@ -148,18 +153,14 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
                     <button
                         type="button"
                         onClick={onCancel}
-
                         className="flex-1 py-3 px-4 bg-gray-200 hover:bg-gray-400 rounded-lg"
-
                     >
                         Cancelar
                     </button>
                     <button
                         type="submit"
-
                         className="flex-1 py-3 px-4 bg-nutri-green hover:bg-nutri-green-dark text-white rounded-lg"
                     >
-
                         Confirmar
                     </button>
                 </div>
