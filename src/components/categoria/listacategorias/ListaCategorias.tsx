@@ -10,7 +10,7 @@ import CardCategoria from "../cardcategoria/CardCategoria";
 
 interface Props {
     limits?: { sm?: number; md?: number; lg?: number; xl?: number };
-    buscarPorCategoria: (id: number) => void;
+    buscarPorCategoria: (id: number | null) => void;
 }
 
 export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
@@ -51,24 +51,33 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         setIsModalDeleteOpen(true);
     }, []);
 
+    const handleBuscar = useCallback(
+        (id: number) => {
+            const newId = id === categoriaId ? 0 : id;
+            setCategoriaId(newId);
+            buscarPorCategoria(newId === 0 ? null : newId);
+        },
+        [buscarPorCategoria, categoriaId]
+    );
     const handleRemove = useCallback(
         async (categoria: Categoria | undefined) => {
-            if (categoria == undefined) return;
+            if (!categoria) return;
             try {
                 await deletar(`/categorias/${categoria.id}`, {
                     headers: { Authorization: token },
                 });
 
-                buscarCategorias();
+                await buscarCategorias();
                 ToastAlerta("Categoria removida com sucesso", "sucesso");
             } catch (err) {
                 ToastAlerta("Erro ao remover produto", "error");
             } finally {
                 setIsModalDeleteOpen(false);
                 setCategoria(undefined);
+                handleBuscar(0);
             }
         },
-        [token, buscarCategorias]
+        [token, buscarCategorias, setCategoria, handleBuscar]
     );
 
     const onConfirm = useCallback(() => {
@@ -102,16 +111,6 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         window.addEventListener("resize", calcLimit);
         return () => window.removeEventListener("resize", calcLimit);
     }, [cfg]);
-
-    const handleBuscar = (id: number) => {
-        if (id === categoriaId) {
-            setCategoriaId(0);
-            buscarPorCategoria(0);
-        } else {
-            setCategoriaId(id);
-            buscarPorCategoria(id);
-        }
-    };
 
     const visible = expanded ? categorias : categorias.slice(0, limit);
 

@@ -15,6 +15,7 @@ interface Props {
     query?: string;
     add: () => void;
     categoriaId?: number | null;
+    atualizarLista: boolean;
 }
 
 export default function ListaProdutos({
@@ -22,6 +23,7 @@ export default function ListaProdutos({
     query = "",
     add,
     categoriaId,
+    atualizarLista,
 }: Props) {
     const [expanded, setExpanded] = useState(false);
     const [limit, setLimit] = useState<number>(3);
@@ -114,12 +116,16 @@ export default function ListaProdutos({
     }, [handleRemove, produto]);
 
     useEffect(() => {
-        if (categoriaId != null) {
-            void buscarProdutosPorCategoria(categoriaId);
+        if (categoriaId !== null) {
+            void buscarProdutosPorCategoria(categoriaId!);
         } else {
             void buscarProdutos();
         }
     }, [categoriaId, buscarProdutos, buscarProdutosPorCategoria]);
+
+    useEffect(() => {
+        void buscarProdutos();
+    }, [atualizarLista, buscarProdutos]);
 
     const cfg = useMemo(
         () => ({

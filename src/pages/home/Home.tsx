@@ -11,6 +11,7 @@ export default function Home() {
     const { usuario } = useContext(AuthContext);
     const [produto, setProduto] = useState<number>(0);
     const [categoriaId, setCategoriaId] = useState<number | null>(null);
+    const [atualizarLista, setAtualizarLista] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -29,8 +30,13 @@ export default function Home() {
         setProduto(produto + 1);
     }
 
-    function buscarPorCategoria(id: number) {
-        setCategoriaId(id);
+    function buscarPorCategoria(id: number | null) {
+        if (id === null) {
+            setAtualizarLista(!atualizarLista);
+            setCategoriaId(0);
+        } else {
+            setCategoriaId(id);
+        }
     }
 
     return (
@@ -79,6 +85,7 @@ export default function Home() {
                         query={debouncedQuery}
                         add={addProduto}
                         categoriaId={categoriaId}
+                        atualizarLista={atualizarLista}
                     />
                 </div>
             </main>

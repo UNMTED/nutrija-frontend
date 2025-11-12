@@ -62,7 +62,6 @@ export default function CardProduto({
                     <div className="flex flex-col px-2">
                         <p className="text-center text-sm font-bold text-slate-900 transition-all duration-300 group-hover:text-nutri-green-dark">
                             {produto.nome}
-                            {usuario.role}
                         </p>
                     </div>
 
