@@ -27,10 +27,13 @@ export default function Modal({
             position={position}
             contentStyle={{
                 borderRadius: "1rem",
+                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+                border: "1px solid #ccff92",
                 padding: "0",
                 marginTop: "3rem",
                 minWidth: "20rem",
                 maxWidth: "100rem",
+                backgroundColor: "white",
             }}
         >
             {

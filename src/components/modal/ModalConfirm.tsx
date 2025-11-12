@@ -29,6 +29,10 @@ export default function ModalConfirm({
                 padding: "10px",
                 minWidth: "20rem",
                 maxWidth: "30rem",
+                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+                border: "1px solid #ccff92",
+                marginTop: "3rem",
+                backgroundColor: "white",
             }}
         >
             {
@@ -55,7 +59,7 @@ export default function ModalConfirm({
                                     close();
                                     onClose?.();
                                 }}
-                                className="px-4 py-2 rounded-md"
+                                className="flex-1 py-3 px-4 bg-gray-100 rounded-lg"
                             >
                                 Cancelar
                             </button>
@@ -67,7 +71,7 @@ export default function ModalConfirm({
                                     close();
                                     onClose?.();
                                 }}
-                                className="px-4 py-2 rounded-md bg-red-600 text-white"
+                                className="flex-1 py-3 px-4 bg-red-500 text-white rounded-lg"
                             >
                                 Confirmar
                             </button>

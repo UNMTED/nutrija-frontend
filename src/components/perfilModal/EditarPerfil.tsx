@@ -1,75 +1,159 @@
-// EditarPerfilForm.tsx - Apenas o essencial
-import { useContext, useState } from "react";
+import {
+    useContext,
+    useEffect,
+    useState,
+    type ChangeEvent,
+    type FormEvent,
+} from "react";
 import { AuthContext } from "../../contexts/AuthContext";
+import type UsuarioLogin from "../../models/UsuarioLogin";
+import { atualizar } from "../../services/Service";
+import { ToastAlerta } from "../../utils/ToastAlerta";
 
 interface EditarPerfilFormProps {
-  onCancel: () => void; 
+    onCancel: () => void;
 }
 
 export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
-  const { usuario } = useContext(AuthContext);
-  
-  // Apenas para mostrar/editar a foto atual
-  const [foto, setFoto] = useState(usuario.foto || "");
+    const { usuario, handleLogout, atualizarUsuarioContext } =
+        useContext(AuthContext);
+    const [usuarioLogado, setUsuarioLogado] = useState<UsuarioLogin>(() => ({
+        ...usuario,
+    }));
+    const token = usuario.token;
 
-  return (
-    <form className="w-full">
-      <div className="space-y-5">
-        {/* Campo Foto */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Foto de Perfil</label>
-          <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full bg-nutri-green-light border-2 border-nutri-green-dark flex items-center justify-center overflow-hidden">
-              {foto ? (
-                <img src={foto} alt="Foto atual" className="w-full h-full object-cover rounded-full" />
-              ) : (
-                <svg className="w-10 h-10 text-nutri-green-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              )}
+    // sincroniza quando o context muda (útil se formulário abrir depois do fetch)
+    useEffect(() => {
+        setUsuarioLogado({ ...usuario });
+    }, [usuario]);
+
+    function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
+        const { name, value } = e.target;
+        setUsuarioLogado((prev) => ({ ...prev, [name]: value }));
+    }
+
+    async function atualizarUsuario(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        try {
+            await atualizar(
+                `/usuarios/atualizar`,
+                usuarioLogado,
+                setUsuarioLogado,
+                {
+                    headers: { Authorization: token },
+                }
+            );
+            atualizarUsuarioContext(usuarioLogado);
+            ToastAlerta("Usuário atualizado com sucesso", "sucesso");
+        } catch (error: any) {
+            if (error.toString().includes("401")) handleLogout();
+            else ToastAlerta("Erro ao atualizar usuário", "erro");
+        }
+    }
+
+    return (
+        <form
+            className="w-full"
+            onSubmit={atualizarUsuario}
+        >
+            <div className="space-y-5">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Foto de Perfil
+                    </label>
+                    <div className="flex items-center gap-4">
+                        <div className="w-20 h-20 rounded-full bg-nutri-green-light border-2 border-nutri-green-dark flex items-center justify-center overflow-hidden">
+                            {usuarioLogado.foto ? (
+                                <img
+                                    src={usuarioLogado.foto}
+                                    alt="Foto atual"
+                                    className="w-full h-full object-cover rounded-full"
+                                />
+                            ) : (
+                                /* svg fallback */
+                                <svg
+                                    className="w-10 h-10 text-nutri-green-dark"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                    />
+                                </svg>
+                            )}
+                        </div>
+
+                        <input
+                            name="foto"
+                            type="text"
+                            placeholder="URL da imagem (opcional)"
+                            value={usuarioLogado.foto ?? ""}
+                            onChange={atualizarEstado}
+                            className="flex-1 px-4 py-2 border rounded-lg outline-none text-sm"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nome
+                    </label>
+                    <input
+                        name="nome"
+                        type="text"
+                        value={usuarioLogado.nome ?? ""}
+                        onChange={atualizarEstado}
+                        className="w-full px-4 py-3 border rounded-lg outline-none"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email
+                    </label>
+                    <input
+                        name="usuario"
+                        type="email"
+                        value={usuarioLogado.usuario ?? ""}
+                        onChange={atualizarEstado}
+                        className="w-full px-4 py-3 border rounded-lg outline-none"
+                        required
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Senha
+                    </label>
+                    <input
+                        name="senha"
+                        type="password"
+                        onChange={atualizarEstado}
+                        className="w-full px-4 py-3 border rounded-lg outline-none"
+                        required
+                    />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="flex-1 py-3 px-4 bg-gray-100 rounded-lg"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type="submit"
+                        className="flex-1 py-3 px-4 bg-nutri-green text-white rounded-lg"
+                    >
+                        Confirmar
+                    </button>
+                </div>
             </div>
-            <input
-              type="text"
-              placeholder="URL da imagem (opcional)"
-              value={foto}
-              onChange={(e) => setFoto(e.target.value)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-nutri-green-light focus:border-nutri-green-light outline-none text-sm"
-            />
-          </div>
-        </div>
-
-        {/* Campo Nome */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Nome</label>
-          <input
-            type="text"
-            defaultValue={usuario.nome}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-nutri-green-light focus:border-nutri-green-light outline-none"
-            required
-          />
-        </div>
-
-        {/* Campo Email  */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-          <input
-            type="email"
-            defaultValue=""
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-nutri-green-light focus:border-nutri-green-light outline-none"
-            required
-          />
-        </div>
-
-        {/* Botões */}
-        <div className="flex gap-3 pt-4">
-          <button type="button" onClick={onCancel} className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200">
-            Cancelar
-          </button>
-          <button type="submit" className="flex-1 py-3 px-4 bg-nutri-green text-white font-medium rounded-lg hover:bg-nutri-green-dark">
-            <span className="inline-flex items-center gap-2">Confirmar</span>
-          </button>
-        </div>
-      </div>
-    </form>
-  );
+        </form>
+    );
 }

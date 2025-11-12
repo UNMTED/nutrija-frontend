@@ -9,6 +9,7 @@ interface AuthContextProps {
     usuario: UsuarioLogin;
     handleLogout(): void;
     handleLogin(usuario: UsuarioLogin): Promise<void>;
+    atualizarUsuarioContext(usuario: UsuarioLogin): void;
     isLoading: boolean;
 }
 
@@ -39,6 +40,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     });
 
     const [isLoading, setIsLoading] = useState(false);
+
+    function atualizarUsuarioContext(novoUsuario: UsuarioLogin) {
+        setUsuario(novoUsuario);
+    }
 
     useEffect(() => {
         try {
@@ -71,7 +76,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     return (
         <AuthContext.Provider
-            value={{ usuario, handleLogin, handleLogout, isLoading }}
+            value={{
+                usuario,
+                handleLogin,
+                handleLogout,
+                isLoading,
+                atualizarUsuarioContext,
+            }}
         >
             {children}
         </AuthContext.Provider>
