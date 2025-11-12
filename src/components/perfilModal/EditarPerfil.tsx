@@ -56,13 +56,14 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
             className="w-full"
             onSubmit={atualizarUsuario}
         >
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
+                {/* Foto de Perfil */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 sm:mb-3">
                         Foto de Perfil
                     </label>
-                    <div className="flex items-center gap-4">
-                        <div className="w-20 h-20 rounded-full bg-nutri-green-light border-2 border-nutri-green-dark flex items-center justify-center overflow-hidden">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-nutri-green-light border-2 border-nutri-green-dark flex items-center justify-center overflow-hidden shrink-0">
                             {usuarioLogado.foto ? (
                                 <img
                                     src={usuarioLogado.foto}
@@ -72,7 +73,7 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
                             ) : (
                                 /* svg fallback */
                                 <svg
-                                    className="w-10 h-10 text-nutri-green-dark"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 text-nutri-green-dark"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -93,13 +94,14 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
                             placeholder="URL da imagem (opcional)"
                             value={usuarioLogado.foto ?? ""}
                             onChange={atualizarEstado}
-                            className="flex-1 px-4 py-2 border rounded-lg outline-none text-sm"
+                            className="flex-1 px-3 sm:px-4 py-2 border rounded-lg outline-none text-sm"
                         />
                     </div>
                 </div>
 
+                {/* Nome */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 sm:mb-3">
                         Nome
                     </label>
                     <input
@@ -107,13 +109,14 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
                         type="text"
                         value={usuarioLogado.nome ?? ""}
                         onChange={atualizarEstado}
-                        className="w-full px-4 py-3 border rounded-lg outline-none"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border rounded-lg outline-none text-sm sm:text-base"
                         required
                     />
                 </div>
 
+                {/* Email */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 sm:mb-3">
                         Email
                     </label>
                     <input
@@ -121,34 +124,37 @@ export default function EditarPerfilForm({ onCancel }: EditarPerfilFormProps) {
                         type="email"
                         value={usuarioLogado.usuario ?? ""}
                         onChange={atualizarEstado}
-                        className="w-full px-4 py-3 border rounded-lg outline-none"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border rounded-lg outline-none text-sm sm:text-base"
                         required
                     />
                 </div>
+
+                {/* Senha */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 sm:mb-3">
                         Senha
                     </label>
                     <input
                         name="senha"
                         type="password"
                         onChange={atualizarEstado}
-                        className="w-full px-4 py-3 border rounded-lg outline-none"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border rounded-lg outline-none text-sm sm:text-base"
                         required
                     />
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                {/* Botões */}
+                <div className="flex gap-2 sm:gap-3 pt-4 sm:pt-6">
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="flex-1 py-3 px-4 bg-gray-100 rounded-lg"
+                        className="flex-1 py-2 sm:py-3 px-3 sm:px-4 bg-gray-100 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-200 transition-colors"
                     >
                         Cancelar
                     </button>
                     <button
                         type="submit"
-                        className="flex-1 py-3 px-4 bg-nutri-green text-white rounded-lg"
+                        className="flex-1 py-2 sm:py-3 px-3 sm:px-4 bg-nutri-green text-white rounded-lg text-sm sm:text-base font-medium hover:bg-nutri-green-dark transition-colors"
                     >
                         Confirmar
                     </button>

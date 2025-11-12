@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -7,8 +8,8 @@ import { ToastAlerta } from "../../../utils/ToastAlerta";
 import Modal from "../../modal/Modal";
 import ModalConfirm from "../../modal/ModalConfirm";
 import DetalhesProdutoModal from "../../modal/detalhesprodutomodal/DetalhesProdutoModal";
-import CardProduto from "../cardproduto/CardProduto";
 import ProdutoEditModal from "../../modal/produtoeditmodal/ProdutoEditModal";
+import CardProduto from "../cardproduto/CardProduto";
 
 interface Props {
     limits?: { sm?: number; md?: number; lg?: number; xl?: number };
@@ -33,8 +34,9 @@ export default function ListaProdutos({
     const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
     const [isModalDetalhesOpen, setIsModalDetalhesOpen] =
         useState<boolean>(false);
-    const [isModalEditOpen, setIsModalEditOpen] =
-        useState<boolean>(false);
+    const [isModalEditOpen, setIsModalEditOpen] = useState<boolean>(false);
+    const [isModalCreateOpen, setIsModalCreateOpen] = useState<boolean>(false);
+
     const { usuario, handleLogout } = useContext(AuthContext);
 
     const navigate = useNavigate();
@@ -158,7 +160,8 @@ export default function ListaProdutos({
         return () => window.removeEventListener("resize", calcLimit);
     }, [cfg]);
 
-    const visible = expanded ? produtos : produtos.slice(0, limit);
+    const reversed = [...produtos].reverse();
+    const visible = expanded ? reversed : reversed.slice(0, limit);
 
     return (
         <section>
@@ -168,7 +171,10 @@ export default function ListaProdutos({
                 </h2>
                 <div>
                     {usuario.role === "admin" && (
-                        <button className="mr-2 md:mr-10 text-sm text-nutri-green-dark hover:underline">
+                        <button
+                            className="mr-2 md:mr-10 text-sm text-nutri-green-dark hover:underline"
+                            onClick={() => setIsModalCreateOpen(true)}
+                        >
                             Adicionar
                         </button>
                     )}
@@ -204,14 +210,14 @@ export default function ListaProdutos({
                     ))}
                 </div>
             )}
-            
+
             <ModalConfirm
                 text={`Tem certeza que deseja excluir o produto ${produto?.nome}?`}
                 open={isModalDeleteOpen}
                 onConfirm={onConfirm}
                 onClose={() => setIsModalDeleteOpen(false)}
             />
-            
+
             <Modal
                 open={isModalDetalhesOpen}
                 onClose={() => setIsModalDetalhesOpen(false)}
@@ -222,7 +228,7 @@ export default function ListaProdutos({
                 />
             </Modal>
 
-            {usuario.role === "admin" && produto && ( 
+            {produto && (
                 <ProdutoEditModal
                     isOpen={isModalEditOpen}
                     onClose={() => setIsModalEditOpen(false)}
@@ -230,6 +236,13 @@ export default function ListaProdutos({
                     onUpdate={buscarProdutos}
                 />
             )}
+
+            <ProdutoEditModal
+                isOpen={isModalCreateOpen}
+                onClose={() => setIsModalCreateOpen(false)}
+                produto={null}
+                onUpdate={buscarProdutos}
+            />
         </section>
     );
 }

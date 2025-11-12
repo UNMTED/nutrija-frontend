@@ -112,8 +112,8 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         return () => window.removeEventListener("resize", calcLimit);
     }, [cfg]);
 
-    const visible = expanded ? categorias : categorias.slice(0, limit);
-
+    const reversed = [...categorias].reverse();
+    const visible = expanded ? reversed : reversed.slice(0, limit);
     return (
         <section>
             <div className="flex items-center justify-between mb-4">
