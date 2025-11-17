@@ -21,7 +21,7 @@ interface Props {
 
 export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     const [expanded, setExpanded] = useState(false);
-    const [limit, setLimit] = useState<number>(3);
+    const [limit, setLimit] = useState<number>(5);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [categoriaId, setCategoriaId] = useState<number>(0);
     const [categoria, setCategoria] = useState<Categoria | undefined>();
@@ -98,12 +98,10 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         [token, buscarCategorias, handleBuscar]
     );
 
-    // --- aqui: agora trata criação e edição ---
     const handleSaveCategoria = useCallback(
         async (categoriaAtualizada: Categoria) => {
             try {
                 if (categoriaAtualizada.id && categoriaAtualizada.id > 0) {
-                    // edição
                     await atualizar(
                         `/categorias`,
                         categoriaAtualizada,
@@ -114,7 +112,6 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                     );
                     ToastAlerta("Categoria atualizada com sucesso", "sucesso");
                 } else {
-                    // criação
                     await cadastrar(
                         `/categorias`,
                         categoriaAtualizada,
@@ -126,10 +123,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                     ToastAlerta("Categoria cadastrada com sucesso", "sucesso");
                 }
 
-                // recarrega lista e garante UI consistente
                 await buscarCategorias();
-
-                // fecha modais (caso tenham sido abertos)
                 setIsModalEditOpen(false);
                 setIsModalCreateOpen(false);
             } catch (error) {
@@ -149,10 +143,10 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
 
     const cfg = useMemo(
         () => ({
-            sm: limits?.sm ?? 3,
+            sm: limits?.sm ?? 2,
             md: limits?.md ?? 3,
-            lg: limits?.lg ?? 5,
-            xl: limits?.xl ?? 9,
+            lg: limits?.lg ?? 4,
+            xl: limits?.xl ?? 5,
         }),
         [limits]
     );
@@ -160,9 +154,9 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     useEffect(() => {
         function calcLimit() {
             const w = window.innerWidth;
-            if (w >= 1024) setLimit(cfg.xl);
-            else if (w >= 768) setLimit(cfg.lg);
-            else if (w >= 640) setLimit(cfg.md);
+            if (w >= 1280) setLimit(cfg.xl);
+            else if (w >= 1024) setLimit(cfg.lg);
+            else if (w >= 768) setLimit(cfg.md);
             else setLimit(cfg.sm);
         }
 
@@ -199,7 +193,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                         {expanded
                             ? "Mostrar menos"
                             : `Ver todos ${
-                                  categorias.length >= limit
+                                  categorias.length > limit
                                       ? "(" + categorias.length + ")"
                                       : ""
                               }`}
@@ -210,19 +204,15 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
             {isLoading ? (
                 <div className="text-center py-8">Carregando...</div>
             ) : (
-                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1 gap-y-4 sm:gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
                     {visible.map((cat) => (
-                        <div
+                        <CardCategoria
                             key={cat.id}
-                            className="shrink-0"
-                        >
-                            <CardCategoria
-                                categoria={cat}
-                                buscar={() => handleBuscar(cat.id)}
-                                remove={() => abreModalConfirm(cat)}
-                                edit={() => abreModalEdicao(cat)}
-                            />
-                        </div>
+                            categoria={cat}
+                            buscar={() => handleBuscar(cat.id)}
+                            remove={() => abreModalConfirm(cat)}
+                            edit={() => abreModalEdicao(cat)}
+                        />
                     ))}
                 </div>
             )}
