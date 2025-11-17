@@ -1,30 +1,28 @@
+import { MagnifyingGlass, ShoppingBag } from "@phosphor-icons/react";
 import { useContext, useEffect, useState } from "react";
-import { PiBagLight } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import ListaCategorias from "../../components/categoria/listacategorias/ListaCategorias";
 import ListaProdutos from "../../components/produto/listaprodutos/ListaProdutos";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useDebounce } from "../../hooks/useDebounce";
-import { ToastAlerta } from "../../utils/ToastAlerta";
 
 export default function Home() {
     const { usuario } = useContext(AuthContext);
     const [produto, setProduto] = useState<number>(0);
     const [categoriaId, setCategoriaId] = useState<number | null>(null);
     const [atualizarLista, setAtualizarLista] = useState<boolean>(false);
-
+    const [query, setQuery] = useState("");
+    const [isFocused, setIsFocused] = useState(false);
+    
+    const debouncedQuery = useDebounce(query, 500);
     const navigate = useNavigate();
-
     const token = usuario.token;
 
     useEffect(() => {
         if (token === "") {
-            ToastAlerta("Você precisa estar logado!", "info");
             navigate("/login");
         }
     }, [token, navigate]);
-    const [query, setQuery] = useState("");
-    const debouncedQuery = useDebounce(query, 500);
 
     function addProduto() {
         setProduto(produto + 1);
@@ -40,55 +38,134 @@ export default function Home() {
     }
 
     return (
-        <>
-            <main>
-                <div className="flex items-baseline">
-                    <div className="flex mx-auto my-5 items-center border w-80 md:w-100 lg:w-150 focus-within:border-nutri-green-light transition duration-300 pr-3 gap-2 text-[#535353] bg-[#D2D8CC] border-gray-500/30 h-[46px] rounded-4xl overflow-hidden">
-                        <input
-                            type="text"
-                            placeholder="O que você quer comer hoje?"
-                            className="w-full h-full pl-4 outline-none text-center placeholder-gray-500 text-sm"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="22"
-                            height="22"
-                            viewBox="0 0 30 30"
-                            fill="#6B7280"
-                            className="cursor-pointer"
-                            onClick={() => {
-                                setQuery((q) => q);
-                            }}
-                        >
-                            <path d="M 13 3 C 7.4889971 3 3 7.4889971 3 13 C 3 18.511003 7.4889971 23 13 23 C 15.396508 23 17.597385 22.148986 19.322266 20.736328 L 25.292969 26.707031 A 1.0001 1.0001 0 1 0 26.707031 25.292969 L 20.736328 19.322266 C 22.148986 17.597385 23 15.396508 23 13 C 23 7.4889971 18.511003 3 13 3 z M 13 5 C 17.430123 5 21 8.5698774 21 13 C 21 17.430123 17.430123 21 13 21 C 8.5698774 21 5 17.430123 5 13 C 5 8.5698774 8.5698774 5 13 5 z"></path>
-                        </svg>
-                    </div>
-                    <div className="hidden md:block mr-5 relative mt-10">
-                        <PiBagLight
-                            size={28}
-                            className="text-gray-700"
-                        />
+        <main className="relative">
+            {/* Background Decorativo */}
+            <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-br from-primary-50 via-lime-50/30 to-transparent -z-10 pattern-dots" />
 
-                        {produto > 0 && (
-                            <span className="absolute -top-2 -right-2 flex items-center justify-center bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5">
-                                {produto}
-                            </span>
+            <div className="flex items-center justify-between gap-4 my-8">
+                {/* Search Bar Melhorada */}
+                <div className="flex-1 max-w-2xl mx-auto">
+                    <div 
+                        className="relative group"
+                        style={{
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                    >
+                        <div 
+                            className={`
+                                flex items-center gap-3 px-4 md:px-6 h-12 md:h-14
+                                bg-white rounded-full shadow-lg
+                                border-2 transition-all duration-300
+                                ${isFocused 
+                                    ? 'border-primary-400 shadow-xl shadow-primary-100' 
+                                    : 'border-neutral-200 hover:border-primary-200'
+                                }
+                            `}
+                        >
+                            <MagnifyingGlass 
+                                size={20} 
+                                weight="bold"
+                                className={`shrink-0 transition-colors duration-300 ${
+                                    isFocused ? 'text-primary-500' : 'text-neutral-400'
+                                }`}
+                            />
+                            
+                            <input
+                                type="text"
+                                placeholder="O que você quer comer hoje?"
+                                className="w-full h-full outline-none text-sm md:text-base placeholder:text-neutral-400 bg-transparent"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                onFocus={() => setIsFocused(true)}
+                                onBlur={() => setIsFocused(false)}
+                            />
+
+                            {query && (
+                                <button
+                                    onClick={() => setQuery("")}
+                                    className="shrink-0 w-6 h-6 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-colors"
+                                    aria-label="Limpar busca"
+                                >
+                                    <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Indicador de Loading */}
+                        {query !== debouncedQuery && (
+                            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
+                                <div className="w-8 h-0.5 bg-primary-400 rounded-full loading-pulse" />
+                            </div>
                         )}
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-10 mt-10 md:gap-15 md:mt-15 lg:gap-20">
+                {/* Carrinho de Compras */}
+                <div className="hidden md:block">
+                    <button 
+                        className="relative w-12 h-12 rounded-full bg-white shadow-lg border border-neutral-100 flex items-center justify-center hover:shadow-xl hover:border-primary-200 transition-all hover:scale-105 active:scale-95"
+                        aria-label="Carrinho de compras"
+                    >
+                        <ShoppingBag size={22} weight="bold" className="text-neutral-700" />
+                        
+                        {produto > 0 && (
+                            <span className="absolute -top-1 -right-1 flex items-center justify-center bg-gradient-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-6 h-6 shadow-lg animate-bounce-subtle">
+                                {produto > 99 ? '99+' : produto}
+                            </span>
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            {/* Conteúdo Principal */}
+            <div className="flex flex-col gap-12 md:gap-16 lg:gap-20 mt-10">
+                <section 
+                    className="animate-fade-in-up"
+                    style={{ animationDelay: '0.1s', animationFillMode: 'both' }}
+                >
                     <ListaCategorias buscarPorCategoria={buscarPorCategoria} />
+                </section>
+
+                <section 
+                    className="animate-fade-in-up"
+                    style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
+                >
                     <ListaProdutos
                         query={debouncedQuery}
                         add={addProduto}
                         categoriaId={categoriaId}
                         atualizarLista={atualizarLista}
                     />
-                </div>
-            </main>
-        </>
+                </section>
+            </div>
+
+            <style>{`
+                @keyframes fade-in-up {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .animate-fade-in-up {
+                    animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                .animate-bounce-subtle {
+                    animation: bounce-subtle 2s infinite;
+                }
+
+                @keyframes bounce-subtle {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-4px); }
+                }
+            `}</style>
+        </main>
     );
 }

@@ -1,4 +1,4 @@
-import { Heart, PencilSimple, Trash } from "@phosphor-icons/react";
+import { Heart, PencilSimple, ShoppingBag, Trash, Sparkle } from "@phosphor-icons/react";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
@@ -10,6 +10,7 @@ interface CardProdutoProps {
     edit: () => void;
     detalhes: () => void;
 }
+
 export default function CardProduto({
     produto,
     add,
@@ -19,82 +20,139 @@ export default function CardProduto({
 }: CardProdutoProps) {
     const { usuario } = useContext(AuthContext);
     const [favorito, setFavorito] = useState<boolean>(false);
+    const [isHovered, setIsHovered] = useState<boolean>(false);
 
     return (
-        <>
-            <div className="w-[150px] md:w-[170px] lg:w-[190px] h-full bg-white rounded-xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-xl border border-white/20 group">
-                <div className="h-full flex flex-col relative">
-                    {usuario.role === "admin" ? (
-                        <PencilSimple
-                            size={32}
-                            weight="fill"
-                            className="absolute top-0 right-0 text-nutri-green-dark z-20 p-1 cursor-pointer"
-                            onClick={edit}
-                        />
-                    ) : (
-                        <Heart
-                            size={32}
-                            weight={favorito ? "fill" : "regular"}
-                            className="absolute top-0 right-0 text-red-500 z-20 p-1 cursor-pointer"
-                            onClick={() => setFavorito(!favorito)}
-                        />
-                    )}
-                    {usuario.role === "admin" && (
-                        <Trash
-                            size={32}
-                            weight="bold"
-                            className="absolute text-red-600 z-20 p-1 cursor-pointer"
-                            onClick={remove}
-                        />
-                    )}
+        <div 
+            className="w-full h-full bg-white rounded-2xl relative overflow-hidden shadow-lg border border-primary-100 group"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            style={{
+                transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
+                boxShadow: isHovered 
+                    ? '0 20px 40px -12px rgba(34, 197, 94, 0.25), 0 0 0 1px rgba(34, 197, 94, 0.1)'
+                    : '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}
+        >
+            {/* Badge de Estoque Baixo */}
+            {produto.quantidade > 0 && produto.quantidade < 10 && (
+                <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-orange-400 to-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1">
+                    <Sparkle size={10} weight="fill" />
+                    <span>Últimas {produto.quantidade}</span>
+                </div>
+            )}
 
-                    <div
-                        onClick={detalhes}
-                        className="w-full h-24 mb-2 rounded-b-2xl bg-nutri-green-light transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-[1.03]"
-                    >
-                        <img
-                            src={produto.foto}
-                            alt={produto.nome}
-                            className="w-full h-full object-contain"
-                        />
-                    </div>
-
-                    <div className="flex flex-col px-2">
-                        <p className="text-center text-sm font-bold text-slate-900 transition-all duration-300 group-hover:text-nutri-green-dark">
-                            {produto.nome}
-                        </p>
-                    </div>
-
-                    <div className="mt-auto flex items-center justify-center">
-                        <div className="text-base px-2 font-extrabold text-slate-900 transition-colors duration-300 group-hover:text-nutri-green-dark">
-                            <span className="text-nutri-green-dark">R$</span>
-                            {Number(produto.preco)
-                                .toFixed(2)
-                                .toLocaleString()
-                                .replace(".", ",")}
-                        </div>
-
+            {/* Ações do Admin/Usuário */}
+            <div className="absolute top-2 right-2 z-10 flex gap-1">
+                {usuario.role === "admin" ? (
+                    <>
                         <button
-                            aria-label="add"
-                            onClick={add}
-                            className="w-7 h-7 m-2 cursor-pointer rounded-full flex items-center justify-center text-white bg-nutri-green-dark transform scale-95 transition-all duration-300 group-hover:scale-100 group-hover:shadow-[0_0_0_6px_rgba(124,58,237,0.12)]"
+                            onClick={edit}
+                            className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg hover:scale-110 transition-transform hover:bg-primary-50"
+                            aria-label="Editar produto"
                         >
-                            <svg
-                                className="w-5 h-7.5"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                aria-hidden
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    d="M4 12H20M12 4V20"
-                                />
-                            </svg>
+                            <PencilSimple size={16} weight="fill" className="text-primary-600" />
                         </button>
+                        <button
+                            onClick={remove}
+                            className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg hover:scale-110 transition-transform hover:bg-red-50"
+                            aria-label="Remover produto"
+                        >
+                            <Trash size={16} weight="bold" className="text-red-600" />
+                        </button>
+                    </>
+                ) : (
+                    <button
+                        onClick={() => setFavorito(!favorito)}
+                        className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                        aria-label={favorito ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                    >
+                        <Heart
+                            size={18}
+                            weight={favorito ? "fill" : "regular"}
+                            className={favorito ? "text-red-500" : "text-neutral-400"}
+                        />
+                    </button>
+                )}
+            </div>
+
+            {/* Imagem com Gradiente Orgânico */}
+            <div 
+                onClick={detalhes}
+                className="relative h-32 md:h-36 lg:h-40 bg-gradient-to-br from-primary-50 via-primary-100/50 to-lime-50 overflow-hidden cursor-pointer"
+            >
+                <img
+                    src={produto.foto}
+                    alt={produto.nome}
+                    className="w-full h-full object-cover"
+                    style={{
+                        transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+                        transform: isHovered ? 'scale(1.15)' : 'scale(1.05)',
+                        filter: isHovered 
+                            ? 'contrast(1.1) saturate(1.15)' 
+                            : 'contrast(1.05) saturate(1.1)'
+                    }}
+                />
+                
+                {/* Overlay Sutil */}
+                <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
+                
+                {/* Badge de Indisponível */}
+                {produto.quantidade <= 0 && (
+                    <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">Indisponível</span>
                     </div>
+                )}
+            </div>
+
+            {/* Conteúdo */}
+            <div className="p-3 md:p-4 space-y-3">
+                <div>
+                    <h4 className="font-semibold text-neutral-800 text-sm md:text-base leading-tight line-clamp-2 mb-1 transition-colors duration-300 group-hover:text-primary-600">
+                        {produto.nome}
+                    </h4>
+                </div>
+
+                {/* Preço e Ação */}
+                <div className="flex items-end justify-between pt-2 border-t border-neutral-100">
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-xs text-neutral-400 font-medium">R$</span>
+                        <span className="text-xl md:text-2xl font-bold text-primary-600">
+                            {Number(produto.preco).toFixed(2).split('.')[0]}
+                        </span>
+                        <span className="text-sm text-neutral-400">
+                            ,{Number(produto.preco).toFixed(2).split('.')[1]}
+                        </span>
+                    </div>
+
+                    <button
+                        onClick={add}
+                        disabled={produto.quantidade <= 0}
+                        className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 text-white flex items-center justify-center shadow-lg shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                        aria-label="Adicionar ao carrinho"
+                    >
+                        <ShoppingBag size={18} weight="bold" />
+                    </button>
                 </div>
             </div>
-        </>
+
+            {/* Shimmer Effect no Hover */}
+            {isHovered && (
+                <div 
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"
+                    style={{
+                        animation: 'shimmer-slide 1.5s infinite',
+                    }}
+                />
+            )}
+
+            <style>{`
+                @keyframes shimmer-slide {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+            `}</style>
+        </div>
     );
 }
