@@ -1,4 +1,4 @@
-import { ArrowRight, PencilSimple, Trash } from "@phosphor-icons/react";
+import { PencilSimple, Trash } from "@phosphor-icons/react";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Categoria } from "../../../models/Categoria";
@@ -21,7 +21,7 @@ export default function CardCategoria({
 
     return (
         <>
-            <div 
+            <div
                 onClick={buscar}
                 className="relative bg-linear-to-br from-nutri-green-light to-nutri-green rounded-2xl p-1 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 group"
                 onMouseEnter={() => setIsHovered(true)}
@@ -35,7 +35,7 @@ export default function CardCategoria({
                         ? "0 12px 24px -8px rgba(34, 197, 94, 0.2)"
                         : "0 2px 4px rgba(0, 0, 0, 0.05)",
                 }}
-              >
+            >
                 {/* Botões de Edição e Exclusão */}
                 {usuario.role === "admin" && (
                     <div className="absolute top-1 right-1 flex gap-1 z-20">
@@ -104,6 +104,6 @@ export default function CardCategoria({
                     100% { transform: translateX(100%); }
                 }
             `}</style>
-        </div>
+        </>
     );
 }
