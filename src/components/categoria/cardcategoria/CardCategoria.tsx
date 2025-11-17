@@ -1,5 +1,5 @@
-import { PencilSimple, Trash } from "@phosphor-icons/react";
-import { useContext } from "react";
+import { ArrowRight, PencilSimple, Trash } from "@phosphor-icons/react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Categoria } from "../../../models/Categoria";
 
@@ -9,6 +9,7 @@ interface CardCategoriaProps {
     remove: () => void;
     edit: () => void;
 }
+
 export default function CardCategoria({
     categoria,
     buscar,
@@ -16,13 +17,25 @@ export default function CardCategoria({
     remove,
 }: CardCategoriaProps) {
     const { usuario } = useContext(AuthContext);
+    const [isHovered, setIsHovered] = useState(false);
 
     return (
         <>
             <div 
                 onClick={buscar}
                 className="relative bg-linear-to-br from-nutri-green-light to-nutri-green rounded-2xl p-1 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 group"
-            >
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                style={{
+                    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                    transform: isHovered
+                        ? "translateY(-4px) scale(1.03)"
+                        : "translateY(0) scale(1)",
+                    boxShadow: isHovered
+                        ? "0 12px 24px -8px rgba(34, 197, 94, 0.2)"
+                        : "0 2px 4px rgba(0, 0, 0, 0.05)",
+                }}
+              >
                 {/* Botões de Edição e Exclusão */}
                 {usuario.role === "admin" && (
                     <div className="absolute top-1 right-1 flex gap-1 z-20">
@@ -74,6 +87,23 @@ export default function CardCategoria({
                     </div>
                 </div>
             </div>
-        </>
+
+            {/* Efeito de Brilho no Hover */}
+            {isHovered && (
+                <div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+                    style={{
+                        animation: "shimmer-slide 1.2s infinite",
+                    }}
+                />
+            )}
+
+            <style>{`
+                @keyframes shimmer-slide {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+            `}</style>
+        </div>
     );
 }
