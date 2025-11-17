@@ -17,7 +17,7 @@ const Inicio = () => {
     }, [usuario, navigate]);
 
     return (
-        <main className="w-full relative overflow-hidden">
+        <main className="w-full min-h-screen xl:min-h-[90vh] relative overflow-hidden">
             {/* Background Decorativo */}
             <div className="absolute inset-0 bg-linear-to-br from-primary-50 via-lime-50/40 to-earth-100/20 -z-10" />
 
@@ -188,10 +188,10 @@ const Inicio = () => {
                         }}
                     >
                         {/* Decoração de Fundo */}
-                        <div className="absolute -inset-4 bg-linear-to-br from-primary-200/40 to-lime-200/40 rounded-3xl blur-3xl -z-10" />
+                        <div className="absolute w-full h-full -inset-4 bg-linear-to-br from-primary-200/40 to-lime-200/40 rounded-3xl blur-3xl -z-10" />
 
                         {/* Imagem Principal */}
-                        <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                        <div className="relative rounded-3xl">
                             <img
                                 src={heroImageURL}
                                 alt="Refeições saudáveis NutriJá"
