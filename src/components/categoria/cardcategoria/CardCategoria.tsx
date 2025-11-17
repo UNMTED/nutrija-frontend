@@ -72,7 +72,7 @@ export default function CardCategoria({
                 <div className="flex items-center gap-2">
                     {/* Texto da Categoria */}
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm md:text-base font-semibold text-green-950 truncate text-center">
+                        <p className="text-sm md:text-base font-bold text-green-950 truncate text-center">
                             {categoria.nome}
                         </p>
                     </div>
@@ -91,7 +91,7 @@ export default function CardCategoria({
             {/* Efeito de Brilho no Hover */}
             {isHovered && (
                 <div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+                    className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent pointer-events-none"
                     style={{
                         animation: "shimmer-slide 1.2s infinite",
                     }}
