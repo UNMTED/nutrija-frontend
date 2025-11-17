@@ -1,5 +1,5 @@
-import { PencilSimple, Trash } from "@phosphor-icons/react";
-import { useContext } from "react";
+import { ArrowRight, PencilSimple, Trash } from "@phosphor-icons/react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Categoria } from "../../../models/Categoria";
 
@@ -9,6 +9,7 @@ interface CardCategoriaProps {
     remove: () => void;
     edit: () => void;
 }
+
 export default function CardCategoria({
     categoria,
     buscar,
@@ -16,65 +17,113 @@ export default function CardCategoria({
     remove,
 }: CardCategoriaProps) {
     const { usuario } = useContext(AuthContext);
+    const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <>
-            <div className="h-full sm:w-full sm:mx-2 md:w-[w-150] bg-white rounded-2xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-md border border-white/20 group">
-                <div className=" h-full flex flex-col gap-3 relative">
-                    {usuario.role === "admin" && (
+        <div
+            className="h-full w-full bg-white rounded-xl relative overflow-hidden shadow-md border border-primary-100/50 group cursor-pointer"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={buscar}
+            style={{
+                transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                transform: isHovered
+                    ? "translateY(-4px) scale(1.03)"
+                    : "translateY(0) scale(1)",
+                boxShadow: isHovered
+                    ? "0 12px 24px -8px rgba(34, 197, 94, 0.2)"
+                    : "0 2px 4px rgba(0, 0, 0, 0.05)",
+            }}
+        >
+            {/* Ações do Admin */}
+            {usuario.role === "admin" && (
+                <div className="absolute top-1 right-1 z-20 flex gap-1">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            edit();
+                        }}
+                        className="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 transition-transform hover:bg-primary-50"
+                        aria-label="Editar categoria"
+                    >
                         <PencilSimple
-                            size={28}
+                            size={14}
                             weight="fill"
-                            className="absolute top-0 right-0 text-nutri-green-dark z-20 p-1 cursor-pointer"
-                            onClick={edit}
+                            className="text-primary-600"
                         />
-                    )}
-                    {usuario.role === "admin" && (
+                    </button>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            remove();
+                        }}
+                        className="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 transition-transform hover:bg-red-50"
+                        aria-label="Remover categoria"
+                    >
                         <Trash
-                            size={28}
+                            size={14}
                             weight="bold"
-                            className="absolute text-red-600 z-20 p-1 cursor-pointer"
-                            onClick={remove}
+                            className="text-red-600"
                         />
-                    )}
-                    <div className="w-full h-20 rounded-b-3xl bg-linear-to-br from-nutri-green-light to-nutri-green transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-[1.03]">
-                        <img
-                            src={categoria.foto}
-                            alt={categoria.nome}
-                            className="w-full h-full object-contain"
+                    </button>
+                </div>
+            )}
+
+            {/* Imagem da Categoria */}
+            <div className="w-full h-16 md:h-20 bg-gradient-to-br from-primary-50 to-lime-50 flex items-center justify-center overflow-hidden rounded-b-2xl">
+                <img
+                    src={categoria.foto}
+                    alt={categoria.nome}
+                    className="w-full h-full object-contain p-2"
+                    style={{
+                        transition:
+                            "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+                        transform: isHovered ? "scale(1.15)" : "scale(1)",
+                        filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
+                    }}
+                />
+            </div>
+
+            {/* Conteúdo */}
+            <div className="flex flex-col items-center gap-2 px-3 py-3">
+                <p className="text-xs md:text-sm font-bold text-center text-neutral-800 transition-all duration-300 group-hover:text-primary-600 line-clamp-2">
+                    {categoria.nome}
+                </p>
+
+                {/* Botão de Ação */}
+                <div
+                    className="mt-auto flex items-center justify-center"
+                    style={{
+                        transition:
+                            "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                        transform: isHovered ? "scale(1.1)" : "scale(1)",
+                    }}
+                >
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-white bg-gradient-to-br from-primary-500 to-primary-600 shadow-md shadow-primary-200">
+                        <ArrowRight
+                            size={14}
+                            weight="bold"
                         />
-                    </div>
-
-                    <div className="flex flex-col gap-1 px-5">
-                        <p className="text-xs font-bold text-center text-slate-900 transition-all duration-300 group-hover:text-nutri-green-dark">
-                            {categoria.nome}
-                        </p>
-                    </div>
-
-                    <div className="mt-auto flex items-center justify-center pb-4 shadow-2xl">
-                        <button
-                            onClick={buscar}
-                            aria-label="add"
-                            className="w-5 h-5 rounded-full flex items-center justify-center text-white bg-nutri-green-dark transform scale-95 transition-all duration-300 group-hover:scale-100 group-hover:shadow-[0_0_0_6px_rgba(124,58,237,0.12)]"
-                        >
-                            <svg
-                                className="w-4 h-4 mx-auto"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="M9 18l6-6-6-6" />
-                            </svg>
-                        </button>
                     </div>
                 </div>
-
-                {/* active press */}
-                <div className="absolute inset-0 -z-10 pointer-events-none"></div>
             </div>
-        </>
+
+            {/* Efeito de Brilho no Hover */}
+            {isHovered && (
+                <div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+                    style={{
+                        animation: "shimmer-slide 1.2s infinite",
+                    }}
+                />
+            )}
+
+            <style>{`
+                @keyframes shimmer-slide {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+            `}</style>
+        </div>
     );
 }

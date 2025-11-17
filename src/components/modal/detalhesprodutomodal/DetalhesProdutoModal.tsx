@@ -1,75 +1,168 @@
+import { Check, Package, ShoppingBag, X } from "@phosphor-icons/react";
 import { type Produto } from "../../../models/Produto";
 
 interface DetalhesProdutoModalProps {
-  produto: Produto;
-  add: () => void;
+    produto: Produto;
+    add: () => void;
 }
 
 const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
-  return (
-    <div
-      className="rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all scale-100 opacity-100 sm:max-h-[90vh] flex flex-col"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className="flex justify-between items-start p-4 sm:p-6 border-b border-gray-100 sticky top-0 z-1 bg-white">
-        <h2 className="text-lg sm:text-xl lg:text-3xl font-extrabold text-nutri-green-dark leading-tight pr-2 line-clamp-2">
-          {produto.nome}
-        </h2>
-      </div>
+    const disponivel = produto.quantidade > 0;
 
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-8">
-          <div className="flex justify-center items-center bg-nutri-green-light rounded-xl overflow-hidden h-48 sm:h-64 lg:h-auto lg:max-h-96">
-            <img
-              src={produto.foto || ""}
-              alt={`Foto do produto ${produto.nome}`}
-              className="w-full h-full object-contain rounded-xl transition duration-300 hover:scale-[1.03]"
-            />
-          </div>
-
-          <div className="space-y-4 sm:space-y-5 flex flex-col">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 pb-3 border-b border-gray-100">
-              <p className="text-3xl sm:text-4xl font-black text-green-600">
-                R$
-                {Number(produto.preco).toFixed(2).toString().replace(".", ",")}
-              </p>
-              <span
-                className={`text-xs sm:text-sm font-semibold px-3 py-1 rounded-full whitespace-nowrap ${
-                  produto.quantidade > 0
-                    ? "bg-nutri-green-light text-nutri-green-dark"
-                    : "bg-red-100 text-red-800"
-                }`}
-              >
-                Estoque: {produto.quantidade}{" "}
-                {produto.quantidade > 0 ? "✅" : "🚫"}
-              </span>
+    return (
+        <div
+            className="rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto transform transition-all scale-100 opacity-100 flex flex-col bg-white"
+            onClick={(e) => e.stopPropagation()}
+        >
+            {/* Header Fixo */}
+            <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-neutral-100 px-6 py-5">
+                <h2 className="text-2xl md:text-3xl font-bold text-neutral-800 leading-tight pr-8 line-clamp-2">
+                    {produto.nome}
+                </h2>
+                
+                {/* Badge de Categoria */}
+                {produto.categoria && (
+                    <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
+                        <Package size={14} weight="bold" />
+                        {produto.categoria.nome}
+                    </div>
+                )}
             </div>
 
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-nutri-green-dark mb-2">
-                Descrição
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed whitespace-pre-wrap">
-                {produto.descricao || "Nenhuma descrição disponível."}
-              </p>
-            </div>
+            {/* Conteúdo Principal */}
+            <div className="flex-1 overflow-y-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 p-6 md:p-8">
+                    
+                    {/* Imagem do Produto */}
+                    <div className="relative">
+                        <div className="sticky top-6 bg-gradient-to-br from-primary-50 via-lime-50/50 to-earth-100/30 rounded-2xl overflow-hidden shadow-lg border border-primary-100">
+                            <img
+                                src={produto.foto || ""}
+                                alt={`Foto do produto ${produto.nome}`}
+                                className="w-full h-64 sm:h-80 lg:h-96 object-cover transition-transform duration-700 hover:scale-110"
+                                style={{
+                                    filter: 'contrast(1.05) saturate(1.1)'
+                                }}
+                            />
+                            
+                            {/* Overlay com Status */}
+                            {!disponivel && (
+                                <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm flex items-center justify-center">
+                                    <div className="text-center">
+                                        <X size={48} weight="bold" className="text-white mx-auto mb-2" />
+                                        <span className="text-white font-bold text-lg">Produto Indisponível</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
-            <div className="pt-2 sm:pt-4 mt-auto">
-              <button
-                className="w-full py-2 sm:py-3 px-4 sm:px-6 bg-nutri-green-dark text-white text-base sm:text-lg font-bold rounded-xl hover:bg-green-700 cursor-pointer transition duration-300 ease-in-out shadow-lg transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={add}
-                disabled={produto.quantidade <= 0}
-              >
-                {produto.quantidade > 0
-                  ? " Adicionar ao Carrinho"
-                  : " Produto Indisponível"}
-              </button>
+                    {/* Informações do Produto */}
+                    <div className="space-y-6">
+                        
+                        {/* Preço e Estoque */}
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 pb-6 border-b border-neutral-100">
+                            <div className="space-y-1">
+                                <p className="text-sm text-neutral-500 font-medium">Preço</p>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-base text-neutral-400">R$</span>
+                                    <span className="text-4xl sm:text-5xl font-black text-primary-600">
+                                        {Number(produto.preco).toFixed(2).split('.')[0]}
+                                    </span>
+                                    <span className="text-xl text-neutral-400">
+                                        ,{Number(produto.preco).toFixed(2).split('.')[1]}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {/* Badge de Estoque */}
+                            <div 
+                                className={`
+                                    inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg
+                                    ${disponivel 
+                                        ? 'bg-gradient-to-br from-primary-400 to-primary-600 text-white' 
+                                        : 'bg-neutral-200 text-neutral-700'
+                                    }
+                                `}
+                            >
+                                {disponivel ? (
+                                    <>
+                                        <Check size={18} weight="bold" />
+                                        <span>Em estoque: {produto.quantidade}</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <X size={18} weight="bold" />
+                                        <span>Indisponível</span>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Descrição */}
+                        <div className="space-y-3">
+                            <h3 className="text-lg font-bold text-neutral-800 flex items-center gap-2">
+                                <div className="w-1 h-6 bg-primary-500 rounded-full" />
+                                Descrição
+                            </h3>
+                            <p className="text-base text-neutral-600 leading-relaxed whitespace-pre-wrap">
+                                {produto.descricao || "Nenhuma descrição disponível para este produto."}
+                            </p>
+                        </div>
+
+                        {/* Informações Adicionais */}
+                        {(produto.categoria || produto.usuario) && (
+                            <div className="pt-4 border-t border-neutral-100 grid grid-cols-2 gap-4">
+                                {produto.categoria && (
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-bold text-neutral-500 uppercase tracking-wide">Categoria</p>
+                                        <p className="text-sm font-semibold text-neutral-800">{produto.categoria.nome}</p>
+                                    </div>
+                                )}
+                                
+                                {produto.usuario && (
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-bold text-neutral-500 uppercase tracking-wide">Cadastrado por</p>
+                                        <p className="text-sm font-semibold text-neutral-800">{produto.usuario.nome}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Botão de Ação */}
+                        <div className="pt-6">
+                            <button
+                                className={`
+                                    w-full py-4 px-6 rounded-xl text-base font-bold
+                                    flex items-center justify-center gap-3
+                                    shadow-lg transition-all duration-300
+                                    ${disponivel
+                                        ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 hover:scale-105 active:scale-95'
+                                        : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
+                                    }
+                                `}
+                                onClick={add}
+                                disabled={!disponivel}
+                            >
+                                <ShoppingBag size={22} weight="bold" />
+                                {disponivel ? "Adicionar ao Carrinho" : "Produto Indisponível"}
+                            </button>
+
+                            {/* Alerta de Estoque Baixo */}
+                            {disponivel && produto.quantidade < 5 && (
+                                <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                                    <p className="text-xs font-medium text-orange-700">
+                                        Últimas unidades! Aproveite enquanto está disponível.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default DetalhesProdutoModal;

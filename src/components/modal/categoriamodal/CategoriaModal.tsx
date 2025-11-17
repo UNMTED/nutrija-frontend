@@ -75,7 +75,7 @@ export default function CategoriaModal({
                 className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all scale-100 opacity-100 rounded-2xl shadow-2xl border border-nutri-green-light"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="sticky top-0 bg-white z-10 flex justify-between items-center p-6 border-b border-gray-100">
+                <div className="sticky top-0 bg-white z-20 flex justify-between items-center p-6 border-b border-gray-100">
                     <h2 className="text-xl font-bold text-nutri-green-dark inline-flex items-center gap-2">
                         <PencilSimple
                             size={24}
