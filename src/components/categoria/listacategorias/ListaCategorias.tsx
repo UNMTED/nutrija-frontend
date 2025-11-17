@@ -1,4 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -165,8 +172,6 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         return () => window.removeEventListener("resize", calcLimit);
     }, [cfg]);
 
-    const visible = expanded ? categorias : categorias.slice(0, limit);
-
     return (
         <section>
             <div className="flex items-center justify-between mb-4">
@@ -183,38 +188,39 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                             Adicionar
                         </button>
                     )}
-
-                    <button
-                        type="button"
-                        onClick={() => setExpanded((s) => !s)}
-                        className="text-sm text-nutri-green-dark hover:underline"
-                        aria-expanded={expanded}
-                    >
-                        {expanded
-                            ? "Mostrar menos"
-                            : `Ver todos ${
-                                  categorias.length > limit
-                                      ? "(" + categorias.length + ")"
-                                      : ""
-                              }`}
-                    </button>
                 </div>
             </div>
 
             {isLoading ? (
                 <div className="text-center py-8">Carregando...</div>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
-                    {visible.map((cat) => (
-                        <CardCategoria
-                            key={cat.id}
-                            categoria={cat}
-                            buscar={() => handleBuscar(cat.id)}
-                            remove={() => abreModalConfirm(cat)}
-                            edit={() => abreModalEdicao(cat)}
-                        />
-                    ))}
-                </div>
+                <Carousel
+                    opts={{
+                        align: "start",
+                    }}
+                    className="w-full"
+                >
+                    <CarouselContent>
+                        {categorias.map((cat) => (
+                            <CarouselItem
+                                key={cat.id}
+                                className="basis-1/2 md:basis-1/3 lg:basis-1/5"
+                            >
+                                <div className="p-1">
+                                    <CardCategoria
+                                        categoria={cat}
+                                        buscar={() => handleBuscar(cat.id)}
+                                        remove={() => abreModalConfirm(cat)}
+                                        edit={() => abreModalEdicao(cat)}
+                                    />
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
             )}
 
             <ModalConfirm
