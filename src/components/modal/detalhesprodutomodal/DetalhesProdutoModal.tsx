@@ -5,6 +5,8 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Package, ShoppingBag, X } from "@phosphor-icons/react";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { type Produto } from "../../../models/Produto";
 
 interface DetalhesProdutoModalProps {
@@ -21,6 +23,7 @@ const DetalhesProdutoModal = ({
     add,
 }: DetalhesProdutoModalProps) => {
     const disponivel = produto.quantidade > 0;
+    const { usuario } = useContext(AuthContext);
 
     return (
         <Dialog
@@ -150,9 +153,10 @@ const DetalhesProdutoModal = ({
                             )}
 
                             {/* Botão De Ação */}
-                            <div className="pt-4 sm:pt-5 md:pt-6 space-y-2 sm:space-y-3">
-                                <button
-                                    className={`
+                            {usuario.role !== "admin" && (
+                                <div className="pt-4 sm:pt-5 md:pt-6 space-y-2 sm:space-y-3">
+                                    <button
+                                        className={`
                                         w-full py-3 xs:py-3.5 sm:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl md:rounded-2xl text-xs xs:text-sm sm:text-base md:text-lg font-bold
                                         flex items-center justify-center gap-2 sm:gap-3
                                         shadow-lg transition-all duration-300
@@ -162,21 +166,22 @@ const DetalhesProdutoModal = ({
                                                 : "bg-neutral-200 text-neutral-500 cursor-not-allowed"
                                         }
                                     `}
-                                    onClick={add}
-                                    disabled={!disponivel}
-                                >
-                                    <ShoppingBag
-                                        size={18}
-                                        weight="bold"
-                                        className="sm:size-7"
-                                    />
-                                    <span className="truncate">
-                                        {disponivel
-                                            ? "Adicionar ao Carrinho"
-                                            : "Indisponível"}
-                                    </span>
-                                </button>
-                            </div>
+                                        onClick={add}
+                                        disabled={!disponivel}
+                                    >
+                                        <ShoppingBag
+                                            size={18}
+                                            weight="bold"
+                                            className="sm:size-7"
+                                        />
+                                        <span className="truncate">
+                                            {disponivel
+                                                ? "Adicionar ao Carrinho"
+                                                : "Indisponível"}
+                                        </span>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -332,3 +332,22 @@ h6 {
         @apply bg-background text-foreground;
     }
 }
+/* Ajusta setas do carousel no mobile */
+.carousel-previous,
+.carousel-next {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Diminuir e puxar para dentro no mobile */
+@media (max-width: 640px) {
+    .carousel-previous {
+        left: 0.5rem !important; /* antes ficava para fora */
+        scale: 0.85; /* deixa menor */
+    }
+
+    .carousel-next {
+        right: 0.5rem !important;
+        scale: 0.85;
+    }
+}

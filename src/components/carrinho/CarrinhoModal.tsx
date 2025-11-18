@@ -4,7 +4,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Minus, Plus, ShoppingBag } from "@phosphor-icons/react";
+import { Minus, Plus, ShoppingCart } from "@phosphor-icons/react";
 import type { Produto } from "../../models/Produto";
 
 interface CartItem extends Produto {
@@ -63,7 +63,7 @@ const CarrinhoModal = ({
                         <div className="flex items-center justify-center h-full min-h-64">
                             <div className="text-center px-4 py-8">
                                 <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-neutral-100 mb-4">
-                                    <ShoppingBag
+                                    <ShoppingCart
                                         size={32}
                                         weight="bold"
                                         className="text-neutral-400 sm:size-40"

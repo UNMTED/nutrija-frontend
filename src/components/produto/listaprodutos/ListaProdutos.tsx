@@ -16,6 +16,8 @@ interface Props {
     add: (produto: Produto) => void;
     categoriaId?: number | null;
     atualizarLista: boolean;
+    onFavorite?: (produto: Produto) => void;
+    isFavorite?: (produtoId: number) => boolean;
 }
 
 export default function ListaProdutos({
@@ -24,6 +26,8 @@ export default function ListaProdutos({
     add,
     categoriaId,
     atualizarLista,
+    onFavorite,
+    isFavorite,
 }: Props) {
     const [expanded, setExpanded] = useState(false);
     const [limit, setLimit] = useState<number>(3);
@@ -98,6 +102,7 @@ export default function ListaProdutos({
         },
         [token, handleLogout, buscarProdutos]
     );
+
     const handleRemove = useCallback(
         async (produto: Produto | undefined) => {
             if (produto == undefined) return;
@@ -121,6 +126,15 @@ export default function ListaProdutos({
     const onConfirm = useCallback(() => {
         void handleRemove(produto);
     }, [handleRemove, produto]);
+
+    const handleFavorite = useCallback(
+        (prod: Produto) => {
+            if (onFavorite) {
+                onFavorite(prod);
+            }
+        },
+        [onFavorite]
+    );
 
     useEffect(() => {
         if (categoriaId !== null) {
@@ -195,7 +209,7 @@ export default function ListaProdutos({
             {isLoading ? (
                 <div className="text-center py-8">Carregando...</div>
             ) : (
-                <div className="px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="px-1 md:px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {visible.map((prod) => (
                         <CardProduto
                             key={prod.id}
@@ -204,6 +218,10 @@ export default function ListaProdutos({
                             add={() => add(prod)}
                             edit={() => abreModalEdit(prod)}
                             detalhes={() => abreModalDetalhes(prod)}
+                            favorite={() => handleFavorite(prod)}
+                            isFavorited={
+                                isFavorite ? isFavorite(prod.id) : false
+                            }
                         />
                     ))}
                 </div>

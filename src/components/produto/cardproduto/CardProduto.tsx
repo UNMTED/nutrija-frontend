@@ -1,4 +1,4 @@
-import { Heart, PencilSimple, ShoppingBag, Trash } from "@phosphor-icons/react";
+import { Basket, Heart, PencilSimple, Trash } from "@phosphor-icons/react";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
@@ -9,6 +9,8 @@ interface CardProdutoProps {
     remove: () => void;
     edit: () => void;
     detalhes: () => void;
+    favorite?: () => void;
+    isFavorited?: boolean;
 }
 
 export default function CardProduto({
@@ -17,9 +19,10 @@ export default function CardProduto({
     remove,
     edit,
     detalhes,
+    favorite,
+    isFavorited = false,
 }: CardProdutoProps) {
     const { usuario } = useContext(AuthContext);
-    const [favorito, setFavorito] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState<boolean>(false);
     const isAvailable = produto.quantidade > 0;
 
@@ -66,24 +69,37 @@ export default function CardProduto({
                     </>
                 ) : (
                     <button
-                        onClick={() => setFavorito(!favorito)}
-                        className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                        onClick={favorite}
+                        className={`w-9 h-9 rounded-full backdrop-blur-sm flex items-center justify-center shadow-lg hover:scale-110 transition-all ${
+                            isFavorited
+                                ? "bg-red-50 hover:bg-red-100"
+                                : "bg-white/90 hover:bg-neutral-50"
+                        }`}
                         aria-label={
-                            favorito
+                            isFavorited
                                 ? "Remover dos favoritos"
                                 : "Adicionar aos favoritos"
                         }
                     >
                         <Heart
                             size={18}
-                            weight={favorito ? "fill" : "regular"}
+                            weight={isFavorited ? "fill" : "regular"}
                             className={
-                                favorito ? "text-red-500" : "text-neutral-400"
+                                isFavorited
+                                    ? "text-red-500"
+                                    : "text-neutral-400 hover:text-red-400"
                             }
+                            style={{
+                                transition: "all 0.3s ease-in-out",
+                                transform: isFavorited
+                                    ? "scale(1.15)"
+                                    : "scale(1)",
+                            }}
                         />
                     </button>
                 )}
             </div>
+
             <div>
                 <div
                     onClick={detalhes}
@@ -144,10 +160,7 @@ export default function CardProduto({
                             className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 text-white flex items-center justify-center shadow-lg shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             aria-label="Adicionar ao carrinho"
                         >
-                            <ShoppingBag
-                                size={18}
-                                weight="bold"
-                            />
+                            <Basket size={28} />
                         </button>
                     )}
                 </div>
