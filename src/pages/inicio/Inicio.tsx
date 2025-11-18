@@ -184,7 +184,7 @@ const Inicio = () => {
                 </section>
 
                 {/* Seção 2: Missão (CORRIGIDO: h1 -> h2) */}
-                <section className="text-center py-12 md:py-16 bg-white shadow-sm border-b border-gray-100 rounded-3xl">
+                <section className="text-center py-12 md:py-16">
                     <h2 className="text-4xl md:text-5xl font-extrabold text-nutri-gray leading-tight">
                         Nossa{" "}
                         <span className="text-nutri-green-dark">Missão</span> é
