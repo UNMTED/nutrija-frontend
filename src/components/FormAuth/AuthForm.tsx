@@ -113,8 +113,8 @@ export default function AuthCard() {
             className="relative w-full max-w-md mx-auto"
             style={{
                 perspective: "51rem",
-                height: isLoginMode ? "28rem" : "38rem",
-                transition: "height 0.5s cubic-bezier(0.16, 1, 0.3, 1)"
+                height: isLoginMode ? "28rem" : "40rem",
+                transition: "height 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
         >
             <input
@@ -128,7 +128,9 @@ export default function AuthCard() {
             {/* Login Card */}
             <div className="log-in-container absolute inset-0 w-full bg-white text-neutral-800 p-6 md:p-8 rounded-2xl shadow-2xl border border-primary-100 flex flex-col">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-neutral-800">Entrar</h2>
+                    <h2 className="text-2xl font-bold text-neutral-800">
+                        Entrar
+                    </h2>
                     <button
                         type="button"
                         onClick={toggleMode}
@@ -138,7 +140,10 @@ export default function AuthCard() {
                     </button>
                 </div>
 
-                <form onSubmit={login} className="flex flex-col gap-5 flex-1">
+                <form
+                    onSubmit={login}
+                    className="flex flex-col gap-5 flex-1"
+                >
                     <div className="space-y-4">
                         <div>
                             <label className="text-sm font-semibold text-neutral-700 mb-2 block">
@@ -185,7 +190,10 @@ export default function AuthCard() {
                     >
                         {isLoadingLogin ? (
                             <div className="flex justify-center items-center gap-2">
-                                <ClipLoader color="#ffffff" size={18} />
+                                <ClipLoader
+                                    color="#ffffff"
+                                    size={18}
+                                />
                                 <span>Entrando...</span>
                             </div>
                         ) : (
@@ -198,7 +206,9 @@ export default function AuthCard() {
             {/* Cadastro Card */}
             <div className="sign-up-container absolute inset-0 w-full bg-white text-neutral-800 p-6 md:p-8 rounded-2xl shadow-2xl border border-primary-100 flex flex-col">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-neutral-800">Criar Conta</h2>
+                    <h2 className="text-2xl font-bold text-neutral-800">
+                        Criar Conta
+                    </h2>
                     <button
                         type="button"
                         onClick={toggleMode}
@@ -208,7 +218,10 @@ export default function AuthCard() {
                     </button>
                 </div>
 
-                <form onSubmit={cadastrarNovoUsuario} className="flex flex-col flex-1">
+                <form
+                    onSubmit={cadastrarNovoUsuario}
+                    className="flex flex-col flex-1"
+                >
                     <div className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                         <div>
                             <label className="text-sm font-semibold text-neutral-700 mb-2 block">
@@ -301,7 +314,10 @@ export default function AuthCard() {
                         >
                             {isLoadingCadastro ? (
                                 <div className="flex justify-center items-center gap-2">
-                                    <ClipLoader color="#ffffff" size={18} />
+                                    <ClipLoader
+                                        color="#ffffff"
+                                        size={18}
+                                    />
                                     <span>Criando...</span>
                                 </div>
                             ) : (
