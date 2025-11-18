@@ -55,17 +55,21 @@ export const NavBar: React.FC = () => {
             ),
             action: () => setShowPerfilModal(true),
         },
-        {
-            to: "",
-            label: "Favoritos",
-            icon: (
-                <Heart
-                    size={16}
-                    weight="bold"
-                />
-            ),
-            action: () => setShowFavoritosModal(true),
-        },
+        ...(usuario.role !== "admin"
+            ? [
+                  {
+                      to: "",
+                      label: "Favoritos",
+                      icon: (
+                          <Heart
+                              size={16}
+                              weight="bold"
+                          />
+                      ),
+                      action: () => setShowFavoritosModal(true),
+                  },
+              ]
+            : []),
         {
             to: "",
             label: "Sair",
