@@ -190,9 +190,8 @@ export default function Home() {
                         aria-label="Carrinho de compras"
                     >
                         <ShoppingBag
-                            size={22}
-                            weight="bold"
-                            className="text-neutral-700 sm:size-26"
+                            size={32}
+                            className="text-neutral-700"
                         />
 
                         {itensCarrinho.length > 0 && (
