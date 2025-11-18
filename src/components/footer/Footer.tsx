@@ -10,9 +10,10 @@ function Footer() {
                     {/* Coluna 1 - Logo (Ícone com Texto) e Descrição */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-12 h-12 rounded-full bg-nutri-gray flex items-center justify-center shadow-lg">
-                                <span className="text-3xl">🥗</span>
-                            </div>
+                            <img
+                                src="/Icon-nutrija.svg"
+                                alt="NutriJa"
+                            />
 
                             <span className="text-2xl font-bold">
                                 <span className="text-nutri-green-dark">

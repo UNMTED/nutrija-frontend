@@ -94,9 +94,10 @@ export const NavBar: React.FC = () => {
                         to="/home"
                         className="flex items-center gap-2 group"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-200 group-hover:scale-110 transition-transform">
-                            <span className="text-2xl">🥗</span>
-                        </div>
+                        <img
+                            src="/Icon-nutrija.svg"
+                            alt="NutriJa"
+                        />
                         <span className="text-2xl font-bold">
                             <span className="text-primary-600">Nutri</span>
                             <span className="text-neutral-800">Já</span>
@@ -250,9 +251,10 @@ export const NavBar: React.FC = () => {
                         to="/"
                         className="flex items-center gap-2 group"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-200 group-hover:scale-110 transition-transform">
-                            <span className="text-2xl">🥗</span>
-                        </div>
+                        <img
+                            src="/Icon-nutrija.svg"
+                            alt="NutriJa"
+                        />
                         <span className="text-2xl font-bold">
                             <span className="text-primary-600">Nutri</span>
                             <span className="text-neutral-800">Já</span>
@@ -263,7 +265,7 @@ export const NavBar: React.FC = () => {
                     {!location.pathname.startsWith("/login") && (
                         <Link
                             to="/login"
-                            className="px-6 py-2.5 bg-linear-to-br from-primary-500 to-primary-600 text-white font-bold rounded-xl shadow-lg shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 hover:scale-105 active:scale-95 transition-all"
+                            className="px-4 sm:px-6 py-2.5 bg-linear-to-br from-primary-600 to-primary-600 text-white font-bold rounded-xl shadow-lg shadow-primary-600 hover:shadow-xl hover:shadow-primary-600 hover:scale-105 active:scale-95 transition-all"
                         >
                             Entrar
                         </Link>
