@@ -121,8 +121,6 @@ export default function CardProduto({
                         }}
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
-
                     {!isAvailable && (
                         <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm flex items-center justify-center">
                             <span className="text-white font-bold text-sm">
