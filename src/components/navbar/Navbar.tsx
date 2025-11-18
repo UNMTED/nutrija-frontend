@@ -263,7 +263,7 @@ export const NavBar: React.FC = () => {
                     {!location.pathname.startsWith("/login") && (
                         <Link
                             to="/login"
-                            className="px-6 py-2.5 bg-linear-to-br from-primary-500 to-primary-600 text-white font-bold rounded-xl shadow-lg shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 hover:scale-105 active:scale-95 transition-all"
+                            className="px-4 sm:px-6 py-2.5 bg-linear-to-br from-primary-600 to-primary-600 text-white font-bold rounded-xl shadow-lg shadow-primary-600 hover:shadow-xl hover:shadow-primary-600 hover:scale-105 active:scale-95 transition-all"
                         >
                             Entrar
                         </Link>

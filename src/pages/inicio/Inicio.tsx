@@ -1,19 +1,26 @@
 import {
+    Basket,
     Clock,
     CookingPot,
     Heart,
     Leaf,
     Lightbulb,
-    Package,
     Truck,
 } from "@phosphor-icons/react";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import {Carrossel} from "../../components/carrossel/Carrossel"
 
 // URLs de imagens de exemplo (substitua pelas suas)
-const heroImageURL =
-    "https://ik.imagekit.io/yljuedpj1/Imagem%20Tela%20Apresenta%C3%A7%C3%A3o.png?updatedAt=1762805133474";
+const heroImages = [
+    "https://ik.imagekit.io/yljuedpj1/Group%2054.png",
+    "https://ik.imagekit.io/yljuedpj1/Group%2052.png",
+    "https://ik.imagekit.io/yljuedpj1/Group%2053%20(1).png",
+    // Adicione mais URLs de imagens aqui
+    // "https://exemplo.com/imagem2.jpg",
+    // "https://exemplo.com/imagem3.jpg",
+];
 // CORRIGIDO: URL da missão é um vídeo .mp4
 const missionVideoURL = "https://i.imgur.com/GPXOB2Z.mp4";
 
@@ -74,11 +81,11 @@ const Inicio = () => {
                         </div>
 
                         {/* Cards de Benefícios (Cores mapeadas) */}
-                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-nutri-green-light p-6 md:p-8">
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-nutri-green-light  p-4  sm:p-6  md:p-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                                 {/* Benefício 1 */}
                                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 group">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-nutri-green to-nutri-green-dark flex items-center justify-center shadow-lg shadow-nutri-green-light group-hover:scale-110 transition-transform shrink-0">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-linear-to-br from-nutri-green to-nutri-green-dark flex items-center justify-center shadow-lg shadow-nutri-green-light group-hover:scale-110 transition-transform shrink-0">
                                         <Clock
                                             size={24}
                                             weight="bold"
@@ -97,7 +104,7 @@ const Inicio = () => {
 
                                 {/* Benefício 2 */}
                                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 group">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-lg shadow-gray-200 group-hover:scale-110 transition-transform shrink-0">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-lg shadow-gray-200 group-hover:scale-110 transition-transform shrink-0">
                                         <Truck
                                             size={24}
                                             weight="bold"
@@ -109,18 +116,18 @@ const Inicio = () => {
                                             Frete grátis
                                         </span>
                                         <span className="text-sm text-gray-600">
-                                            em compras acima de R$50
+                                            acima de R$50
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* Benefício 3 */}
                                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 group sm:col-span-3 md:col-span-1">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-nutri-green-light to-lime-200 flex items-center justify-center shadow-lg shadow-nutri-green-light/30 group-hover:scale-110 transition-transform shrink-0">
-                                        <Package
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12  rounded-xl bg-linear-to-br from-nutri-green to-nutri-green-dark flex items-center justify-center shadow-lg shadow-nutri-green-light/30 group-hover:scale-110 transition-transform shrink-0">
+                                        <Basket
                                             size={24}
                                             weight="bold"
-                                            className="text-nutri-gray"
+                                            className="text-white"
                                         />
                                     </div>
                                     <div className="flex flex-col text-center sm:text-left">
@@ -136,38 +143,35 @@ const Inicio = () => {
                         </div>
 
                         {/* CTA Button (Cores mapeadas) */}
-                        <div className="flex gap-4">
+                        <div className="flex gap-3 sm:flex-row  sm:gap-4">
                             <button
                                 onClick={() => navigate("/login")}
-                                className="flex-1 sm:flex-initial px-8 py-4 bg-gradient-to-br from-nutri-green-dark to-nutri-green text-white font-bold rounded-xl shadow-lg shadow-nutri-green-light hover:shadow-xl hover:shadow-nutri-green hover:scale-105 active:scale-95 transition-all text-base md:text-lg"
+                                className="flex-1 sm:flex-initial px-8 py-4 bg-linear-to-br from-nutri-green-dark to-nutri-green text-white font-bold rounded-xl shadow-lg shadow-nutri-green-light hover:shadow-xl hover:shadow-nutri-green hover:scale-105 active:scale-95 transition-all text-xs md:text-lg "
                             >
                                 Começar agora
                             </button>
                             <button
                                 onClick={() => navigate("/login")}
-                                className="flex-1 sm:flex-initial px-8 py-4 bg-white text-nutri-green-dark font-bold rounded-xl shadow-lg border-2 border-nutri-green-light hover:border-nutri-green hover:shadow-xl hover:scale-105 active:scale-95 transition-all text-base md:text-lg"
+                                className="flex-1 sm:flex-initial px-8 py-4 bg-white text-nutri-green-dark font-bold rounded-xl shadow-lg border-2 border-nutri-green-light hover:border-nutri-green hover:shadow-xl hover:scale-105 active:scale-95 transition-all text-sm md:text-lg"
                             >
                                 Saiba mais
                             </button>
                         </div>
                     </div>
 
-                    {/* Coluna direita - Imagem Hero */}
-                    <div className="relative">
-                        <div className="absolute -inset-4 bg-gradient-to-br from-nutri-green-light/40 to-lime-200/40 rounded-3xl blur-3xl -z-10" />
-                        <div className="relative">
-                            <img
-                                src={heroImageURL}
-                                alt="Refeições saudáveis NutriJá"
-                                className="w-full h-auto lg:transform lg:scale-110 lg:translate-x-8"
-                                style={{
-                                    filter: "contrast(1.05) saturate(1.1)",
-                                }}
-                            />
-                        </div>
+                 {/* Coluna direita - Carrossel de Imagens Hero */}
+<div className="relative pb-12">
+    <div className="absolute -inset-4 ... -z-10" />
+    
+    {/* Carrossel */}
+    <div className="relative">
+        <Carrossel images={heroImages} autoplayDelay={4000} />
+    </div>
+
+    <div className="hidden lg:block absolute -bottom-6 ... z-20"></div>
                         <div className="hidden lg:block absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-2xl p-4 border border-nutri-green-light animate-float">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-nutri-green to-nutri-green-dark flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-xl bg--to-br from-nutri-green to-nutri-green-dark flex items-center justify-center">
                                     <span className="text-2xl">🥗</span>
                                 </div>
                                 <div>
