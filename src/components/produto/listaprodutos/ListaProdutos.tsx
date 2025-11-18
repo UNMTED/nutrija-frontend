@@ -5,7 +5,6 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 import { buscar, deletar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
-import Modal from "../../modal/Modal";
 import ModalConfirm from "../../modal/ModalConfirm";
 import DetalhesProdutoModal from "../../modal/detalhesprodutomodal/DetalhesProdutoModal";
 import ProdutoEditModal from "../../modal/produtoeditmodal/ProdutoEditModal";
@@ -14,9 +13,11 @@ import CardProduto from "../cardproduto/CardProduto";
 interface Props {
     limits?: { sm?: number; md?: number; lg?: number; xl?: number };
     query?: string;
-    add: () => void;
+    add: (produto: Produto) => void;
     categoriaId?: number | null;
     atualizarLista: boolean;
+    onFavorite?: (produto: Produto) => void;
+    isFavorite?: (produtoId: number) => boolean;
 }
 
 export default function ListaProdutos({
@@ -25,6 +26,8 @@ export default function ListaProdutos({
     add,
     categoriaId,
     atualizarLista,
+    onFavorite,
+    isFavorite,
 }: Props) {
     const [expanded, setExpanded] = useState(false);
     const [limit, setLimit] = useState<number>(3);
@@ -99,6 +102,7 @@ export default function ListaProdutos({
         },
         [token, handleLogout, buscarProdutos]
     );
+
     const handleRemove = useCallback(
         async (produto: Produto | undefined) => {
             if (produto == undefined) return;
@@ -122,6 +126,15 @@ export default function ListaProdutos({
     const onConfirm = useCallback(() => {
         void handleRemove(produto);
     }, [handleRemove, produto]);
+
+    const handleFavorite = useCallback(
+        (prod: Produto) => {
+            if (onFavorite) {
+                onFavorite(prod);
+            }
+        },
+        [onFavorite]
+    );
 
     useEffect(() => {
         if (categoriaId !== null) {
@@ -196,15 +209,19 @@ export default function ListaProdutos({
             {isLoading ? (
                 <div className="text-center py-8">Carregando...</div>
             ) : (
-                <div className="px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="px-1 md:px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {visible.map((prod) => (
                         <CardProduto
                             key={prod.id}
                             produto={prod}
                             remove={() => abreModalConfirm(prod)}
-                            add={add}
+                            add={() => add(prod)}
                             edit={() => abreModalEdit(prod)}
                             detalhes={() => abreModalDetalhes(prod)}
+                            favorite={() => handleFavorite(prod)}
+                            isFavorited={
+                                isFavorite ? isFavorite(prod.id) : false
+                            }
                         />
                     ))}
                 </div>
@@ -217,15 +234,14 @@ export default function ListaProdutos({
                 onClose={() => setIsModalDeleteOpen(false)}
             />
 
-            <Modal
-                open={isModalDetalhesOpen}
-                onClose={() => setIsModalDetalhesOpen(false)}
-            >
+            {produto && (
                 <DetalhesProdutoModal
-                    add={add}
-                    produto={produto!}
+                    open={isModalDetalhesOpen}
+                    onClose={() => setIsModalDetalhesOpen(false)}
+                    produto={produto}
+                    add={() => add(produto)}
                 />
-            </Modal>
+            )}
 
             {produto && (
                 <ProdutoEditModal

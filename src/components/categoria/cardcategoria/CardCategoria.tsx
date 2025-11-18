@@ -1,5 +1,5 @@
 import { PencilSimple, Trash } from "@phosphor-icons/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Categoria } from "../../../models/Categoria";
 
@@ -9,6 +9,7 @@ interface CardCategoriaProps {
     remove: () => void;
     edit: () => void;
 }
+
 export default function CardCategoria({
     categoria,
     buscar,
@@ -16,65 +17,93 @@ export default function CardCategoria({
     remove,
 }: CardCategoriaProps) {
     const { usuario } = useContext(AuthContext);
+    const [isHovered, setIsHovered] = useState(false);
 
     return (
         <>
-            <div className="h-full sm:w-full sm:mx-2 md:w-[w-150] bg-white rounded-2xl relative overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-md border border-white/20 group">
-                <div className=" h-full flex flex-col gap-3 relative">
-                    {usuario.role === "admin" && (
-                        <PencilSimple
-                            size={28}
-                            weight="fill"
-                            className="absolute top-0 right-0 text-nutri-green-dark z-20 p-1 cursor-pointer"
-                            onClick={edit}
-                        />
-                    )}
-                    {usuario.role === "admin" && (
-                        <Trash
-                            size={28}
-                            weight="bold"
-                            className="absolute text-red-600 z-20 p-1 cursor-pointer"
-                            onClick={remove}
-                        />
-                    )}
-                    <div className="w-full h-20 rounded-b-3xl bg-linear-to-br from-nutri-green-light to-nutri-green transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-[1.03]">
-                        <img
-                            src={categoria.foto}
-                            alt={categoria.nome}
-                            className="w-full h-full object-contain"
-                        />
+            <div
+                onClick={buscar}
+                className="relative bg-linear-to-br from-nutri-green-light to-nutri-green rounded-2xl p-1 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 group"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                style={{
+                    transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                    transform: isHovered
+                        ? "translateY(-4px) scale(1.03)"
+                        : "translateY(0) scale(1)",
+                    boxShadow: isHovered
+                        ? "0 12px 24px -8px rgba(34, 197, 94, 0.2)"
+                        : "0 2px 4px rgba(0, 0, 0, 0.05)",
+                }}
+            >
+                {/* Botões de Edição e Exclusão */}
+                {usuario.role === "admin" && (
+                    <div className="absolute top-1 right-1 flex gap-1 z-20">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                edit();
+                            }}
+                            className="bg-white/80 rounded-full p-1 hover:bg-white transition-colors"
+                        >
+                            <PencilSimple
+                                size={16}
+                                weight="fill"
+                                className="text-nutri-green-dark"
+                            />
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                remove();
+                            }}
+                            className="bg-white/80 rounded-full p-1 hover:bg-white transition-colors"
+                        >
+                            <Trash
+                                size={16}
+                                weight="bold"
+                                className="text-red-600"
+                            />
+                        </button>
                     </div>
+                )}
 
-                    <div className="flex flex-col gap-1 px-5">
-                        <p className="text-xs font-bold text-center text-slate-900 transition-all duration-300 group-hover:text-nutri-green-dark">
+                {/* Container do Conteúdo */}
+                <div className="flex items-center gap-2">
+                    {/* Texto da Categoria */}
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm md:text-base font-bold text-green-950 truncate text-center">
                             {categoria.nome}
                         </p>
                     </div>
 
-                    <div className="mt-auto flex items-center justify-center pb-4 shadow-2xl">
-                        <button
-                            onClick={buscar}
-                            aria-label="add"
-                            className="w-5 h-5 rounded-full flex items-center justify-center text-white bg-nutri-green-dark transform scale-95 transition-all duration-300 group-hover:scale-100 group-hover:shadow-[0_0_0_6px_rgba(124,58,237,0.12)]"
-                        >
-                            <svg
-                                className="w-4 h-4 mx-auto"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="M9 18l6-6-6-6" />
-                            </svg>
-                        </button>
+                    {/* Imagem da Categoria */}
+                    <div className="shrink-0 w-16 h-16 md:w-20 md:h-20">
+                        <img
+                            src={categoria.foto}
+                            alt={categoria.nome}
+                            className="w-full h-full object-contain drop-shadow-md"
+                        />
                     </div>
                 </div>
-
-                {/* active press */}
-                <div className="absolute inset-0 -z-10 pointer-events-none"></div>
             </div>
+
+            {/* Efeito de Brilho no Hover */}
+            {isHovered && (
+                <div
+                    className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+                    style={{
+                        animation: "shimmer-slide 1.2s infinite",
+                    }}
+                />
+            )}
+
+            <style>{`
+                @keyframes shimmer-slide {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+            `}</style>
         </>
     );
 }
