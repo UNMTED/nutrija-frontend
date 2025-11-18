@@ -6,7 +6,7 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Categoria } from "../../../models/Categoria";
@@ -22,13 +22,10 @@ import ModalConfirm from "../../modal/ModalConfirm";
 import CardCategoria from "../cardcategoria/CardCategoria";
 
 interface Props {
-    limits?: { sm?: number; md?: number; lg?: number; xl?: number };
     buscarPorCategoria: (id: number | null) => void;
 }
 
-export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
-    const [expanded, setExpanded] = useState(false);
-    const [limit, setLimit] = useState<number>(5);
+export default function ListaCategorias({ buscarPorCategoria }: Props) {
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [categoriaId, setCategoriaId] = useState<number>(0);
     const [categoria, setCategoria] = useState<Categoria | undefined>();
@@ -147,30 +144,6 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
     useEffect(() => {
         buscarCategorias();
     }, [buscarCategorias]);
-
-    const cfg = useMemo(
-        () => ({
-            sm: limits?.sm ?? 2,
-            md: limits?.md ?? 3,
-            lg: limits?.lg ?? 4,
-            xl: limits?.xl ?? 5,
-        }),
-        [limits]
-    );
-
-    useEffect(() => {
-        function calcLimit() {
-            const w = window.innerWidth;
-            if (w >= 1280) setLimit(cfg.xl);
-            else if (w >= 1024) setLimit(cfg.lg);
-            else if (w >= 768) setLimit(cfg.md);
-            else setLimit(cfg.sm);
-        }
-
-        calcLimit();
-        window.addEventListener("resize", calcLimit);
-        return () => window.removeEventListener("resize", calcLimit);
-    }, [cfg]);
 
     return (
         <section>

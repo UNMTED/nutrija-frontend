@@ -88,13 +88,6 @@
     background: linear-gradient(180deg, #16a34a, #15803d);
 }
 
-/* Focus Rings Consistentes */
-*:focus-visible {
-    outline: 2px solid #22c55e;
-    outline-offset: 2px;
-    border-radius: 4px;
-}
-
 /* Tipografia Hierárquica */
 body {
     font-family: "Inter", "Poppins", sans-serif;
@@ -332,10 +325,10 @@ h6 {
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
+    body {
+        @apply bg-background text-foreground;
     }
 }

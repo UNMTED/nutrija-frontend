@@ -3,6 +3,17 @@ import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import type { Categoria } from "../../../models/Categoria";
 
+// shadcn components
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+
 interface CategoriaModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -33,15 +44,12 @@ export default function CategoriaModal({
                 setFoto("");
             }
         } else {
-            // limpa ao fechar
             setNome("");
             setDescricao("");
             setFoto("");
             setIsSubmitting(false);
         }
     }, [isOpen, categoria]);
-
-    if (!isOpen) return null;
 
     const isEditMode = !!categoria;
 
@@ -55,7 +63,7 @@ export default function CategoriaModal({
                 nome: nome.trim(),
                 descricao: descricao.trim(),
                 foto: foto.trim(),
-            } as Categoria;
+            };
 
             onSave(payload);
             onClose();
@@ -67,16 +75,13 @@ export default function CategoriaModal({
     };
 
     return (
-        <div
-            className="fixed inset-0 bg-transparent bg-opacity-50 flex items-center justify-center z-50 p-4"
-            onClick={(e) => e.target === e.currentTarget && onClose()}
+        <Dialog
+            open={isOpen}
+            onOpenChange={(open) => !open && onClose()}
         >
-            <div
-                className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all scale-100 opacity-100 rounded-2xl shadow-2xl border border-nutri-green-light"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="sticky top-0 bg-white z-20 flex justify-between items-center p-6 border-b border-gray-100">
-                    <h2 className="text-xl font-bold text-nutri-green-dark inline-flex items-center gap-2">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-nutri-green-dark">
                         <PencilSimple
                             size={24}
                             weight="fill"
@@ -84,33 +89,19 @@ export default function CategoriaModal({
                         {isEditMode
                             ? `Editar Categoria: ${categoria?.nome}`
                             : "Cadastrar Categoria"}
-                    </h2>
+                    </DialogTitle>
 
-                    <button
-                        onClick={onClose}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 hover:text-nutri-green-dark hover:bg-gray-100"
-                        aria-label="Fechar modal"
-                    >
-                        <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        </svg>
-                    </button>
-                </div>
+                    <DialogDescription>
+                        {isEditMode
+                            ? "Altere as informações da categoria selecionada."
+                            : "Preencha os campos abaixo para cadastrar uma nova categoria."}
+                    </DialogDescription>
+                </DialogHeader>
 
                 {!isSubmitting ? (
                     <form
                         onSubmit={handleSubmit}
-                        className="p-8 space-y-6"
+                        className="space-y-6 mt-4"
                     >
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -148,6 +139,7 @@ export default function CategoriaModal({
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-nutri-green focus:border-transparent"
                                 placeholder="https://exemplo.com/imagem.jpg"
                             />
+
                             {foto && (
                                 <img
                                     src={foto}
@@ -157,24 +149,25 @@ export default function CategoriaModal({
                             )}
                         </div>
 
-                        <div className="flex gap-4 pt-4">
+                        <DialogFooter className="flex flex-row gap-4 pt-4">
                             <button
                                 type="submit"
-                                className="flex-1 rounded-lg bg-nutri-green hover:bg-nutri-green-dark py-3 px-6 text-center font-sans text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg"
+                                className="flex-1 rounded-lg bg-nutri-green hover:bg-nutri-green-dark py-3 px-6 text-xs font-bold uppercase text-white shadow-md transition-all"
                             >
                                 {isEditMode
                                     ? "Salvar Alterações"
                                     : "Cadastrar Categoria"}
                             </button>
 
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="flex-1 rounded-lg bg-gray-400 hover:bg-gray-500 py-3 px-6 text-center font-sans text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg"
-                            >
-                                Cancelar
-                            </button>
-                        </div>
+                            <DialogClose asChild>
+                                <button
+                                    type="button"
+                                    className="flex-1 rounded-lg bg-gray-400 hover:bg-gray-500 py-3 px-6 text-xs font-bold uppercase text-white shadow-md transition-all"
+                                >
+                                    Cancelar
+                                </button>
+                            </DialogClose>
+                        </DialogFooter>
                     </form>
                 ) : (
                     <div className="p-8 flex items-center justify-center">
@@ -184,7 +177,7 @@ export default function CategoriaModal({
                         />
                     </div>
                 )}
-            </div>
-        </div>
+            </DialogContent>
+        </Dialog>
     );
 }

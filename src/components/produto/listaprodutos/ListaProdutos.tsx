@@ -5,7 +5,6 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 import { buscar, deletar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
-import Modal from "../../modal/Modal";
 import ModalConfirm from "../../modal/ModalConfirm";
 import DetalhesProdutoModal from "../../modal/detalhesprodutomodal/DetalhesProdutoModal";
 import ProdutoEditModal from "../../modal/produtoeditmodal/ProdutoEditModal";
@@ -14,7 +13,7 @@ import CardProduto from "../cardproduto/CardProduto";
 interface Props {
     limits?: { sm?: number; md?: number; lg?: number; xl?: number };
     query?: string;
-    add: () => void;
+    add: (produto: Produto) => void;
     categoriaId?: number | null;
     atualizarLista: boolean;
 }
@@ -202,7 +201,7 @@ export default function ListaProdutos({
                             key={prod.id}
                             produto={prod}
                             remove={() => abreModalConfirm(prod)}
-                            add={add}
+                            add={() => add(prod)}
                             edit={() => abreModalEdit(prod)}
                             detalhes={() => abreModalDetalhes(prod)}
                         />
@@ -217,15 +216,14 @@ export default function ListaProdutos({
                 onClose={() => setIsModalDeleteOpen(false)}
             />
 
-            <Modal
-                open={isModalDetalhesOpen}
-                onClose={() => setIsModalDetalhesOpen(false)}
-            >
+            {produto && (
                 <DetalhesProdutoModal
-                    add={add}
-                    produto={produto!}
+                    open={isModalDetalhesOpen}
+                    onClose={() => setIsModalDetalhesOpen(false)}
+                    produto={produto}
+                    add={() => add(produto)}
                 />
-            </Modal>
+            )}
 
             {produto && (
                 <ProdutoEditModal
