@@ -4,7 +4,7 @@ function Footer() {
     const data = new Date().getFullYear();
 
     return (
-        <footer className="w-full bg-gradient-to-br from-gray-50 to-nutri-green-light/30 border-t border-gray-200 mt-20">
+        <footer className="w-full bg-gradient-to-br from-gray-50 to-nutri-green-light/30 border-t border-gray-200">
             <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                     {/* Coluna 1 - Logo (Ícone com Texto) e Descrição */}
