@@ -44,19 +44,13 @@
     --color-neutral-900: #1c1917;
 
     /* Acentos de Frescor */
-    --color-fresh-mint: #6ee7b7 ;
+    --color-fresh-mint: #6ee7b7;
     --color-fresh-sky: #7dd3fc;
 
     /* Aliases Legados (compatibilidade) */
-<<<<<<< HEAD
     --color-nutri-green-light: #ccff92;
     --color-nutri-green: #88e31f;
     --color-nutri-green-dark: #29a114;
-=======
-    --color-nutri-green-light: #dcfce7;
-    --color-nutri-green: #22c55e;
-    --color-nutri-green-dark: #69c204;
->>>>>>> d70bd57a3878f53a5efd4d94904b674693dc8150
     --color-nutri-gray: #44403c;
 
     /* Easing Curves Naturais */
