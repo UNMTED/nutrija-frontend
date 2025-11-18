@@ -155,7 +155,7 @@ const Inicio = () => {
                     {/* Coluna direita - Imagem Hero */}
                     <div className="relative">
                         <div className="absolute -inset-4 bg-gradient-to-br from-nutri-green-light/40 to-lime-200/40 rounded-3xl blur-3xl -z-10" />
-                        <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                        <div className="relative">
                             <img
                                 src={heroImageURL}
                                 alt="Refeições saudáveis NutriJá"
