@@ -27,6 +27,7 @@ export default function CardProduto({
     const { usuario } = useContext(AuthContext);
     const [favorito, setFavorito] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState<boolean>(false);
+    const isAvailable = produto.quantidade > 0;
 
     return (
         <div
@@ -43,18 +44,14 @@ export default function CardProduto({
                     : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
             }}
         >
-            {/* Badge de Estoque Baixo */}
-            {produto.quantidade > 0 && produto.quantidade < 10 && (
-                <div className="absolute top-2 left-2 z-10 bg-linear-to-r from-orange-400 to-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1">
-                    <Sparkle
-                        size={10}
-                        weight="fill"
-                    />
-                    <span>Últimas {produto.quantidade}</span>
+            {/* Badge de Estoque Baixo - REMOVIDO EXIBIÇÃO DA QUANTIDADE */}
+            {produto.quantidade > 0 && produto.quantidade < 10 && usuario.role !== "admin" && (
+                <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-orange-400 to-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1">
+                    <Sparkle size={10} weight="fill" />
+                    <span>Estoque baixo!</span>
                 </div>
             )}
 
-            {/* Ações do Admin/Usuário */}
             <div className="absolute top-2 right-2 z-10 flex gap-1">
                 {usuario.role === "admin" ? (
                     <>
@@ -102,8 +99,8 @@ export default function CardProduto({
                 )}
             </div>
 
-            {/* Imagem com Gradiente Orgânico */}
-            <div
+
+            <div 
                 onClick={detalhes}
                 className="relative h-32 md:h-36 lg:h-40 bg-linear-to-br from-primary-50 via-primary-100/50 to-lime-50 overflow-hidden cursor-pointer"
             >
@@ -120,11 +117,9 @@ export default function CardProduto({
                     }}
                 />
 
-                {/* Overlay Sutil */}
-                <div className="absolute inset-0 bg-linear-to-t from-white/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
 
-                {/* Badge de Indisponível */}
-                {produto.quantidade <= 0 && (
+                {!isAvailable && (
                     <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm flex items-center justify-center">
                         <span className="text-white font-bold text-sm">
                             Indisponível
@@ -141,7 +136,6 @@ export default function CardProduto({
                     </h4>
                 </div>
 
-                {/* Preço e Ação */}
                 <div className="flex items-end justify-between pt-2 border-t border-neutral-100">
                     <div className="flex items-baseline gap-1">
                         <span className="text-xs text-neutral-400 font-medium">
@@ -155,21 +149,19 @@ export default function CardProduto({
                         </span>
                     </div>
 
-                    <button
-                        onClick={add}
-                        disabled={produto.quantidade <= 0}
-                        className="w-10 h-10 rounded-xl bg-linear-to-br from-primary-500 to-primary-600 text-white flex items-center justify-center shadow-lg shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                        aria-label="Adicionar ao carrinho"
-                    >
-                        <ShoppingBag
-                            size={18}
-                            weight="bold"
-                        />
-                    </button>
+                    {usuario.role !== "admin" && (
+                        <button
+                            onClick={add}
+                            disabled={!isAvailable}
+                            className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 text-white flex items-center justify-center shadow-lg shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            aria-label="Adicionar ao carrinho"
+                        >
+                            <ShoppingBag size={18} weight="bold" />
+                        </button>
+                    )}
                 </div>
             </div>
 
-            {/* Shimmer Effect no Hover */}
             {isHovered && (
                 <div
                     className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent pointer-events-none"

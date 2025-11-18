@@ -182,25 +182,27 @@ export default function Home() {
                     </div>
                 </div>
 
-                {/* Carrinho de Compras */}
-                <div>
-                    <button
-                        onClick={() => setCarrinhoAberto(true)}
-                        className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-lg border border-neutral-100 flex items-center justify-center hover:shadow-xl hover:border-primary-200 transition-all hover:scale-105 active:scale-95"
-                        aria-label="Carrinho de compras"
-                    >
-                        <ShoppingBag
-                            size={32}
-                            className="text-neutral-700"
-                        />
+                {usuario.role !== "admin" && (
+                    <div>
+                      <button
+                          onClick={() => setCarrinhoAberto(true)}
+                          className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-lg border border-neutral-100 flex items-center justify-center hover:shadow-xl hover:border-primary-200 transition-all hover:scale-105 active:scale-95"
+                          aria-label="Carrinho de compras"
+                      >
+                          <ShoppingBag
+                              size={32}
+                              className="text-neutral-700"
+                          />
 
-                        {itensCarrinho.length > 0 && (
-                            <span className="absolute -top-1 -right-1 flex items-center justify-center bg-linear-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-6 h-6 shadow-lg animate-bounce-subtle">
-                                {totalItens > 99 ? "99+" : totalItens}
-                            </span>
-                        )}
-                    </button>
-                </div>
+                          {itensCarrinho.length > 0 && (
+                              <span className="absolute -top-1 -right-1 flex items-center justify-center bg-linear-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-6 h-6 shadow-lg animate-bounce-subtle">
+                                  {totalItens > 99 ? "99+" : totalItens}
+                              </span>
+                          )}
+                      </button>
+                    </div>
+                )}
+              
             </div>
 
             {/* Conteúdo Principal */}
