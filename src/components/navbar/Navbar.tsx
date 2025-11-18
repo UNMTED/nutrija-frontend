@@ -157,7 +157,7 @@ export const NavBar: React.FC = () => {
                         to="/"
                         className="flex items-center gap-2 group"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-200 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 rounded-full bg-nutri-gray flex items-center justify-center shadow-lg">
                             <span className="text-2xl">🥗</span>
                         </div>
                         <span className="text-2xl font-bold">

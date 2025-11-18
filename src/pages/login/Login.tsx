@@ -19,7 +19,7 @@ export default function Login() {
                             >
                                 <span className="font-normal text-nutri-gray">
                                     Bem-vindo de volta ao sabor{" "}
-                                    <span className="font-bold text-nutri-green">
+                                    <span className="font-bold text-nutri-green-dark">
                                         {" "}
                                         que te faz bem.
                                     </span>

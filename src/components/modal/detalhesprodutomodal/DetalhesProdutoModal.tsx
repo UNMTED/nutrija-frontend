@@ -1,4 +1,6 @@
 import { Check, Package, ShoppingBag, X } from "@phosphor-icons/react";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { type Produto } from "../../../models/Produto";
 
 interface DetalhesProdutoModalProps {
@@ -7,6 +9,7 @@ interface DetalhesProdutoModalProps {
 }
 
 const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
+    const { usuario } = useContext(AuthContext); // Adicionando AuthContext
     const disponivel = produto.quantidade > 0;
 
     return (
@@ -45,7 +48,7 @@ const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
                                 }}
                             />
                             
-                            {/* Overlay com Status */}
+
                             {!disponivel && (
                                 <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm flex items-center justify-center">
                                     <div className="text-center">
@@ -59,8 +62,7 @@ const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
 
                     {/* Informações do Produto */}
                     <div className="space-y-6">
-                        
-                        {/* Preço e Estoque */}
+
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 pb-6 border-b border-neutral-100">
                             <div className="space-y-1">
                                 <p className="text-sm text-neutral-500 font-medium">Preço</p>
@@ -74,8 +76,7 @@ const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
                                     </span>
                                 </div>
                             </div>
-                            
-                            {/* Badge de Estoque */}
+
                             <div 
                                 className={`
                                     inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg
@@ -88,7 +89,7 @@ const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
                                 {disponivel ? (
                                     <>
                                         <Check size={18} weight="bold" />
-                                        <span>Em estoque: {produto.quantidade}</span>
+                                        <span>Disponível</span>
                                     </>
                                 ) : (
                                     <>
@@ -99,7 +100,6 @@ const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
                             </div>
                         </div>
 
-                        {/* Descrição */}
                         <div className="space-y-3">
                             <h3 className="text-lg font-bold text-neutral-800 flex items-center gap-2">
                                 <div className="w-1 h-6 bg-primary-500 rounded-full" />
@@ -110,7 +110,6 @@ const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
                             </p>
                         </div>
 
-                        {/* Informações Adicionais */}
                         {(produto.categoria || produto.usuario) && (
                             <div className="pt-4 border-t border-neutral-100 grid grid-cols-2 gap-4">
                                 {produto.categoria && (
@@ -129,35 +128,27 @@ const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
                             </div>
                         )}
 
-                        {/* Botão de Ação */}
-                        <div className="pt-6">
-                            <button
-                                className={`
-                                    w-full py-4 px-6 rounded-xl text-base font-bold
-                                    flex items-center justify-center gap-3
-                                    shadow-lg transition-all duration-300
-                                    ${disponivel
-                                        ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 hover:scale-105 active:scale-95'
-                                        : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
-                                    }
-                                `}
-                                onClick={add}
-                                disabled={!disponivel}
-                            >
-                                <ShoppingBag size={22} weight="bold" />
-                                {disponivel ? "Adicionar ao Carrinho" : "Produto Indisponível"}
-                            </button>
+                        {usuario.role !== "admin" && (
+                            <div className="pt-6">
+                                <button
+                                    className={`
+                                        w-full py-4 px-6 rounded-xl text-base font-bold
+                                        flex items-center justify-center gap-3
+                                        shadow-lg transition-all duration-300
+                                        ${disponivel
+                                            ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 hover:scale-105 active:scale-95'
+                                            : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
+                                        }
+                                    `}
+                                    onClick={add}
+                                    disabled={!disponivel}
+                                >
+                                    <ShoppingBag size={22} weight="bold" />
+                                    {disponivel ? "Adicionar ao Carrinho" : "Produto Indisponível"}
+                                </button>
 
-                            {/* Alerta de Estoque Baixo */}
-                            {disponivel && produto.quantidade < 5 && (
-                                <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                                    <p className="text-xs font-medium text-orange-700">
-                                        Últimas unidades! Aproveite enquanto está disponível.
-                                    </p>
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
