@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Categoria } from "../../../models/Categoria";
@@ -15,13 +22,10 @@ import ModalConfirm from "../../modal/ModalConfirm";
 import CardCategoria from "../cardcategoria/CardCategoria";
 
 interface Props {
-    limits?: { sm?: number; md?: number; lg?: number; xl?: number };
     buscarPorCategoria: (id: number | null) => void;
 }
 
-export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
-    const [expanded, setExpanded] = useState(false);
-    const [limit, setLimit] = useState<number>(3);
+export default function ListaCategorias({ buscarPorCategoria }: Props) {
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [categoriaId, setCategoriaId] = useState<number>(0);
     const [categoria, setCategoria] = useState<Categoria | undefined>();
@@ -41,8 +45,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
 
     useEffect(() => {
         if (token === "") {
-            ToastAlerta("Você precisa estar logado!", "info");
-            navigate("/");
+            navigate("/login");
         }
     }, [token, navigate]);
 
@@ -99,12 +102,10 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         [token, buscarCategorias, handleBuscar]
     );
 
-    // --- aqui: agora trata criação e edição ---
     const handleSaveCategoria = useCallback(
         async (categoriaAtualizada: Categoria) => {
             try {
                 if (categoriaAtualizada.id && categoriaAtualizada.id > 0) {
-                    // edição
                     await atualizar(
                         `/categorias`,
                         categoriaAtualizada,
@@ -115,7 +116,6 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                     );
                     ToastAlerta("Categoria atualizada com sucesso", "sucesso");
                 } else {
-                    // criação
                     await cadastrar(
                         `/categorias`,
                         categoriaAtualizada,
@@ -127,10 +127,7 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                     ToastAlerta("Categoria cadastrada com sucesso", "sucesso");
                 }
 
-                // recarrega lista e garante UI consistente
                 await buscarCategorias();
-
-                // fecha modais (caso tenham sido abertos)
                 setIsModalEditOpen(false);
                 setIsModalCreateOpen(false);
             } catch (error) {
@@ -148,32 +145,6 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
         buscarCategorias();
     }, [buscarCategorias]);
 
-    const cfg = useMemo(
-        () => ({
-            sm: limits?.sm ?? 2,
-            md: limits?.md ?? 3,
-            lg: limits?.lg ?? 5,
-            xl: limits?.xl ?? 9,
-        }),
-        [limits]
-    );
-
-    useEffect(() => {
-        function calcLimit() {
-            const w = window.innerWidth;
-            if (w >= 1024) setLimit(cfg.xl);
-            else if (w >= 768) setLimit(cfg.lg);
-            else if (w >= 640) setLimit(cfg.md);
-            else setLimit(cfg.sm);
-        }
-
-        calcLimit();
-        window.addEventListener("resize", calcLimit);
-        return () => window.removeEventListener("resize", calcLimit);
-    }, [cfg]);
-
-    const visible = expanded ? categorias : categorias.slice(0, limit);
-
     return (
         <section>
             <div className="flex items-center justify-between mb-4">
@@ -190,42 +161,39 @@ export default function ListaCategorias({ limits, buscarPorCategoria }: Props) {
                             Adicionar
                         </button>
                     )}
-
-                    <button
-                        type="button"
-                        onClick={() => setExpanded((s) => !s)}
-                        className="text-sm text-nutri-green-dark hover:underline"
-                        aria-expanded={expanded}
-                    >
-                        {expanded
-                            ? "Mostrar menos"
-                            : `Ver todos ${
-                                  categorias.length >= limit
-                                      ? "(" + categorias.length + ")"
-                                      : ""
-                              }`}
-                    </button>
                 </div>
             </div>
 
             {isLoading ? (
                 <div className="text-center py-8">Carregando...</div>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-4">
-                    {visible.map((cat) => (
-                        <div
-                            key={cat.id}
-                            className="shrink-0"
-                        >
-                            <CardCategoria
-                                categoria={cat}
-                                buscar={() => handleBuscar(cat.id)}
-                                remove={() => abreModalConfirm(cat)}
-                                edit={() => abreModalEdicao(cat)}
-                            />
-                        </div>
-                    ))}
-                </div>
+                <Carousel
+                    opts={{
+                        align: "start",
+                    }}
+                    className="w-full"
+                >
+                    <CarouselContent>
+                        {categorias.map((cat) => (
+                            <CarouselItem
+                                key={cat.id}
+                                className="basis-1/2 md:basis-1/3 lg:basis-1/5"
+                            >
+                                <div className="p-1">
+                                    <CardCategoria
+                                        categoria={cat}
+                                        buscar={() => handleBuscar(cat.id)}
+                                        remove={() => abreModalConfirm(cat)}
+                                        edit={() => abreModalEdicao(cat)}
+                                    />
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
             )}
 
             <ModalConfirm

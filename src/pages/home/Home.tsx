@@ -1,32 +1,40 @@
 import { MagnifyingGlass, ShoppingBag } from "@phosphor-icons/react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CarrinhoModal from "../../components/carrinho/CarrinhoModal";
 import ListaCategorias from "../../components/categoria/listacategorias/ListaCategorias";
 import ListaProdutos from "../../components/produto/listaprodutos/ListaProdutos";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useDebounce } from "../../hooks/useDebounce";
+import { type Produto } from "../../models/Produto";
+
+interface CartItem extends Produto {
+    quantidadeCarrinho: number;
+}
 
 export default function Home() {
     const { usuario } = useContext(AuthContext);
-    const [produto, setProduto] = useState<number>(0);
     const [categoriaId, setCategoriaId] = useState<number | null>(null);
     const [atualizarLista, setAtualizarLista] = useState<boolean>(false);
     const [query, setQuery] = useState("");
     const [isFocused, setIsFocused] = useState(false);
-    
+    const [carrinhoAberto, setCarrinhoAberto] = useState(false);
+    const [itensCarrinho, setItensCarrinho] = useState<CartItem[]>([]);
+
     const debouncedQuery = useDebounce(query, 500);
     const navigate = useNavigate();
     const token = usuario.token;
+
+    const totalItens = itensCarrinho.reduce(
+        (acc, item) => acc + item.quantidadeCarrinho,
+        0
+    );
 
     useEffect(() => {
         if (token === "") {
             navigate("/login");
         }
     }, [token, navigate]);
-
-    function addProduto() {
-        setProduto(produto + 1);
-    }
 
     function buscarPorCategoria(id: number | null) {
         if (id === null) {
@@ -37,43 +45,105 @@ export default function Home() {
         }
     }
 
+    function adicionarAoCarrinho(produtoAdicionado: Produto) {
+        setItensCarrinho((prevItems) => {
+            const itemExistente = prevItems.find(
+                (item) => item.id === produtoAdicionado.id
+            );
+
+            if (itemExistente) {
+                return prevItems.map((item) =>
+                    item.id === produtoAdicionado.id
+                        ? {
+                              ...item,
+                              quantidadeCarrinho: item.quantidadeCarrinho + 1,
+                          }
+                        : item
+                );
+            }
+
+            return [
+                ...prevItems,
+                {
+                    ...produtoAdicionado,
+                    quantidadeCarrinho: 1,
+                },
+            ];
+        });
+    }
+
+    function removerDoCarrinho(produtoId: number) {
+        setItensCarrinho((prevItems) =>
+            prevItems.filter((item) => item.id !== produtoId)
+        );
+    }
+
+    function atualizarQuantidadeCarrinho(
+        produtoId: number,
+        novaQuantidade: number
+    ) {
+        if (novaQuantidade < 1) {
+            removerDoCarrinho(produtoId);
+            return;
+        }
+
+        setItensCarrinho((prevItems) =>
+            prevItems.map((item) =>
+                item.id === produtoId
+                    ? { ...item, quantidadeCarrinho: novaQuantidade }
+                    : item
+            )
+        );
+    }
+
+    function finalizarCompra() {
+        // Lógica de checkout aqui
+        console.log("Finalizando compra com items:", itensCarrinho);
+        // Após finalizar, você pode limpar o carrinho
+        // setItensCarrinho([]);
+        // setCarrinhoAberto(false);
+    }
+
     return (
         <main className="relative">
             {/* Background Decorativo */}
-            <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-br from-primary-50 via-lime-50/30 to-transparent -z-10 pattern-dots" />
+            <div className="absolute top-0 left-0 right-0 h-64 bg-linear-to-br from-primary-50 via-lime-50/30 to-transparent -z-10 pattern-dots" />
 
-            <div className="flex items-center justify-between gap-4 my-8">
+            <div className="flex items-center justify-between gap-4 my-8 px-4 sm:px-6 md:px-8">
                 {/* Search Bar Melhorada */}
                 <div className="flex-1 max-w-2xl mx-auto">
-                    <div 
+                    <div
                         className="relative group"
                         style={{
-                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                         }}
                     >
-                        <div 
+                        <div
                             className={`
                                 flex items-center gap-3 px-4 md:px-6 h-12 md:h-14
                                 bg-white rounded-full shadow-lg
                                 border-2 transition-all duration-300
-                                ${isFocused 
-                                    ? 'border-primary-400 shadow-xl shadow-primary-100' 
-                                    : 'border-neutral-200 hover:border-primary-200'
+                                ${
+                                    isFocused
+                                        ? "border-primary-400 shadow-xl shadow-primary-100"
+                                        : "border-neutral-200 hover:border-primary-200"
                                 }
                             `}
                         >
-                            <MagnifyingGlass 
-                                size={20} 
+                            <MagnifyingGlass
+                                size={20}
                                 weight="bold"
                                 className={`shrink-0 transition-colors duration-300 ${
-                                    isFocused ? 'text-primary-500' : 'text-neutral-400'
+                                    isFocused
+                                        ? "text-primary-500"
+                                        : "text-neutral-400"
                                 }`}
                             />
-                            
+
                             <input
                                 type="text"
                                 placeholder="O que você quer comer hoje?"
-                                className="w-full h-full outline-none text-sm md:text-base placeholder:text-neutral-400 bg-transparent"
+                                className="w-full h-full outline-none focus:outline-none text-sm md:text-base placeholder:text-neutral-400 bg-transparent"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 onFocus={() => setIsFocused(true)}
@@ -86,8 +156,18 @@ export default function Home() {
                                     className="shrink-0 w-6 h-6 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-colors"
                                     aria-label="Limpar busca"
                                 >
-                                    <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    <svg
+                                        className="w-4 h-4 text-neutral-600"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
                                     </svg>
                                 </button>
                             )}
@@ -102,18 +182,21 @@ export default function Home() {
                     </div>
                 </div>
 
-                {/* Carrinho de Compras - REMOVIDO PARA ADMIN */}
                 {usuario.role !== "admin" && (
-                    <div className="hidden md:block">
-                        <button 
-                            className="relative w-12 h-12 rounded-full bg-white shadow-lg border border-neutral-100 flex items-center justify-center hover:shadow-xl hover:border-primary-200 transition-all hover:scale-105 active:scale-95"
+                    <div>
+                        <button
+                            onClick={() => setCarrinhoAberto(true)}
+                            className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-lg border border-neutral-100 flex items-center justify-center hover:shadow-xl hover:border-primary-200 transition-all hover:scale-105 active:scale-95"
                             aria-label="Carrinho de compras"
                         >
-                            <ShoppingBag size={22} weight="bold" className="text-neutral-700" />
-                            
-                            {produto > 0 && (
-                                <span className="absolute -top-1 -right-1 flex items-center justify-center bg-gradient-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-6 h-6 shadow-lg animate-bounce-subtle">
-                                    {produto > 99 ? '99+' : produto}
+                            <ShoppingBag
+                                size={32}
+                                className="text-neutral-700"
+                            />
+
+                            {itensCarrinho.length > 0 && (
+                                <span className="absolute -top-1 -right-1 flex items-center justify-center bg-linear-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-6 h-6 shadow-lg animate-bounce-subtle">
+                                    {totalItens > 99 ? "99+" : totalItens}
                                 </span>
                             )}
                         </button>
@@ -122,26 +205,42 @@ export default function Home() {
             </div>
 
             {/* Conteúdo Principal */}
-            <div className="flex flex-col gap-12 md:gap-16 lg:gap-20 mt-10">
-                <section 
+            <div className="flex flex-col gap-12 md:gap-16 lg:gap-20 mt-10 px-4 sm:px-6 md:px-8">
+                <section
                     className="animate-fade-in-up"
-                    style={{ animationDelay: '0.1s', animationFillMode: 'both' }}
+                    style={{
+                        animationDelay: "0.1s",
+                        animationFillMode: "both",
+                    }}
                 >
                     <ListaCategorias buscarPorCategoria={buscarPorCategoria} />
                 </section>
 
-                <section 
+                <section
                     className="animate-fade-in-up"
-                    style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
+                    style={{
+                        animationDelay: "0.2s",
+                        animationFillMode: "both",
+                    }}
                 >
                     <ListaProdutos
                         query={debouncedQuery}
-                        add={addProduto}
+                        add={adicionarAoCarrinho}
                         categoriaId={categoriaId}
                         atualizarLista={atualizarLista}
                     />
                 </section>
             </div>
+
+            {/* Modal do Carrinho */}
+            <CarrinhoModal
+                open={carrinhoAberto}
+                onClose={setCarrinhoAberto}
+                items={itensCarrinho}
+                onRemove={removerDoCarrinho}
+                onUpdateQuantidade={atualizarQuantidadeCarrinho}
+                onCheckout={finalizarCompra}
+            />
 
             <style>{`
                 @keyframes fade-in-up {
