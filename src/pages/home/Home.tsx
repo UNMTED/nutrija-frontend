@@ -1,10 +1,12 @@
-import { MagnifyingGlass, ShoppingBag } from "@phosphor-icons/react";
+import { MagnifyingGlass, ShoppingCart } from "@phosphor-icons/react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CarrinhoModal from "../../components/carrinho/CarrinhoModal";
 import ListaCategorias from "../../components/categoria/listacategorias/ListaCategorias";
+import FavoritosProdutoModal from "../../components/favorito/FavoritoModal";
 import ListaProdutos from "../../components/produto/listaprodutos/ListaProdutos";
 import { AuthContext } from "../../contexts/AuthContext";
+import { useFavoritos } from "../../contexts/FavoritosContext";
 import { useDebounce } from "../../hooks/useDebounce";
 import { type Produto } from "../../models/Produto";
 
@@ -14,11 +16,18 @@ interface CartItem extends Produto {
 
 export default function Home() {
     const { usuario } = useContext(AuthContext);
+    const {
+        produtosFavoritos,
+        adicionarAosFavoritos,
+        removerDosFavoritos,
+        verificarSeFavorito,
+    } = useFavoritos();
     const [categoriaId, setCategoriaId] = useState<number | null>(null);
     const [atualizarLista, setAtualizarLista] = useState<boolean>(false);
     const [query, setQuery] = useState("");
     const [isFocused, setIsFocused] = useState(false);
     const [carrinhoAberto, setCarrinhoAberto] = useState(false);
+    const [favoritosAberto, setFavoritosAberto] = useState(false);
     const [itensCarrinho, setItensCarrinho] = useState<CartItem[]>([]);
 
     const debouncedQuery = useDebounce(query, 500);
@@ -29,6 +38,37 @@ export default function Home() {
         (acc, item) => acc + item.quantidadeCarrinho,
         0
     );
+
+    // Listener para evento de adicionar ao carrinho vindo da NavBar/Favoritos
+    useEffect(() => {
+        const handleAdicionarProduto = (event: CustomEvent) => {
+            const detail = event.detail as any;
+            const { produto, abrirCarrinho } =
+                detail && typeof detail === "object" && "produto" in detail
+                    ? {
+                          produto: detail.produto as Produto,
+                          abrirCarrinho: Boolean(detail.abrirCarrinho),
+                      }
+                    : { produto: detail as Produto, abrirCarrinho: false };
+
+            adicionarAoCarrinho(produto);
+            if (abrirCarrinho) {
+                setCarrinhoAberto(true);
+            }
+        };
+
+        window.addEventListener(
+            "adicionarAoCarrinho" as any,
+            handleAdicionarProduto as EventListener
+        );
+
+        return () => {
+            window.removeEventListener(
+                "adicionarAoCarrinho" as any,
+                handleAdicionarProduto as EventListener
+            );
+        };
+    }, [itensCarrinho]);
 
     useEffect(() => {
         if (token === "") {
@@ -109,7 +149,7 @@ export default function Home() {
             {/* Background Decorativo */}
             <div className="absolute top-0 left-0 right-0 h-64 bg-linear-to-br from-primary-50 via-lime-50/30 to-transparent -z-10 pattern-dots" />
 
-            <div className="flex items-center justify-between gap-4 my-8 px-4 sm:px-6 md:px-8">
+            <div className="flex items-center justify-between gap-2 sm:gap-4 my-8 px-4 sm:px-6 md:px-8">
                 {/* Search Bar Melhorada */}
                 <div className="flex-1 max-w-2xl mx-auto">
                     <div
@@ -120,7 +160,7 @@ export default function Home() {
                     >
                         <div
                             className={`
-                                flex items-center gap-3 px-4 md:px-6 h-12 md:h-14
+                                flex items-center gap-3 px-3 sm:px-4 md:px-6 h-10 sm:h-12 md:h-14
                                 bg-white rounded-full shadow-lg
                                 border-2 transition-all duration-300
                                 ${
@@ -143,7 +183,7 @@ export default function Home() {
                             <input
                                 type="text"
                                 placeholder="O que você quer comer hoje?"
-                                className="w-full h-full outline-none focus:outline-none text-sm md:text-base placeholder:text-neutral-400 bg-transparent"
+                                className="w-full h-full outline-none focus:outline-none text-xs sm:text-sm md:text-base placeholder:text-neutral-400 bg-transparent"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 onFocus={() => setIsFocused(true)}
@@ -153,11 +193,11 @@ export default function Home() {
                             {query && (
                                 <button
                                     onClick={() => setQuery("")}
-                                    className="shrink-0 w-6 h-6 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-colors"
+                                    className="shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-colors"
                                     aria-label="Limpar busca"
                                 >
                                     <svg
-                                        className="w-4 h-4 text-neutral-600"
+                                        className="w-3 h-3 sm:w-4 sm:h-4 text-neutral-600"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -183,19 +223,20 @@ export default function Home() {
                 </div>
 
                 {usuario.role !== "admin" && (
-                    <div>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        {/* Botão Carrinho */}
                         <button
                             onClick={() => setCarrinhoAberto(true)}
-                            className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-lg border border-neutral-100 flex items-center justify-center hover:shadow-xl hover:border-primary-200 transition-all hover:scale-105 active:scale-95"
+                            className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-lg border border-neutral-100 flex items-center justify-center hover:shadow-xl hover:border-primary-200 transition-all hover:scale-105 active:scale-95"
                             aria-label="Carrinho de compras"
                         >
-                            <ShoppingBag
-                                size={32}
+                            <ShoppingCart
+                                size={28}
                                 className="text-neutral-700"
                             />
 
                             {itensCarrinho.length > 0 && (
-                                <span className="absolute -top-1 -right-1 flex items-center justify-center bg-linear-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-6 h-6 shadow-lg animate-bounce-subtle">
+                                <span className="absolute -top-1 -right-1 flex items-center justify-center bg-linear-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-5 h-5 sm:w-6 sm:h-6 shadow-lg animate-bounce-subtle">
                                     {totalItens > 99 ? "99+" : totalItens}
                                 </span>
                             )}
@@ -228,6 +269,8 @@ export default function Home() {
                         add={adicionarAoCarrinho}
                         categoriaId={categoriaId}
                         atualizarLista={atualizarLista}
+                        onFavorite={adicionarAosFavoritos}
+                        isFavorite={verificarSeFavorito}
                     />
                 </section>
             </div>
@@ -240,6 +283,15 @@ export default function Home() {
                 onRemove={removerDoCarrinho}
                 onUpdateQuantidade={atualizarQuantidadeCarrinho}
                 onCheckout={finalizarCompra}
+            />
+
+            {/* Modal de Favoritos */}
+            <FavoritosProdutoModal
+                open={favoritosAberto}
+                onClose={setFavoritosAberto}
+                produtos={produtosFavoritos}
+                onRemove={removerDosFavoritos}
+                onAddToCart={adicionarAoCarrinho}
             />
 
             <style>{`

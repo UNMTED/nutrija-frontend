@@ -1,23 +1,35 @@
-import { House, SignOut, User } from "@phosphor-icons/react";
+import { Heart, House, SignOut, User } from "@phosphor-icons/react";
 import { useContext, useState, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import PerfilModal from "../../components/perfilModal/PerfilModal";
 import { AuthContext } from "../../contexts/AuthContext";
+import { useFavoritos } from "../../contexts/FavoritosContext";
+import type { Produto } from "../../models/Produto";
 import { ToastAlerta } from "../../utils/ToastAlerta";
+import FavoritosProdutoModal from "../favorito/FavoritoModal";
 
 export const NavBar: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { usuario, handleLogout } = useContext(AuthContext);
+    const { produtosFavoritos, removerDosFavoritos } = useFavoritos();
 
     const [profileOpen, setProfileOpen] = useState(false);
-
     const [showPerfilModal, setShowPerfilModal] = useState(false);
+    const [showFavoritosModal, setShowFavoritosModal] = useState(false);
 
     function logout() {
         handleLogout();
         ToastAlerta("Usuário desconectado com sucesso!", "info");
         navigate("/");
+    }
+
+    function adicionarAoCarrinho(produto: Produto) {
+        // Dispara evento customizado que a página Home vai escutar
+        window.dispatchEvent(
+            new CustomEvent("adicionarAoCarrinho", { detail: produto })
+        );
+        ToastAlerta(`${produto.nome} adicionado ao carrinho!`, "sucesso");
     }
 
     const profileLinks = [
@@ -42,6 +54,17 @@ export const NavBar: React.FC = () => {
                 />
             ),
             action: () => setShowPerfilModal(true),
+        },
+        {
+            to: "",
+            label: "Favoritos",
+            icon: (
+                <Heart
+                    size={16}
+                    weight="bold"
+                />
+            ),
+            action: () => setShowFavoritosModal(true),
         },
         {
             to: "",
@@ -145,7 +168,20 @@ export const NavBar: React.FC = () => {
                                                         role="menuitem"
                                                     >
                                                         {l.icon}
-                                                        {l.label}
+                                                        <span className="flex-1">
+                                                            {l.label}
+                                                        </span>
+                                                        {l.label ===
+                                                            "Favoritos" &&
+                                                            produtosFavoritos.length >
+                                                                0 && (
+                                                                <span className="bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                                                    {produtosFavoritos.length >
+                                                                    99
+                                                                        ? "99+"
+                                                                        : produtosFavoritos.length}
+                                                                </span>
+                                                            )}
                                                     </Link>
                                                 ) : (
                                                     <button
@@ -160,7 +196,20 @@ export const NavBar: React.FC = () => {
                                                         role="menuitem"
                                                     >
                                                         {l.icon}
-                                                        {l.label}
+                                                        <span className="flex-1">
+                                                            {l.label}
+                                                        </span>
+                                                        {l.label ===
+                                                            "Favoritos" &&
+                                                            produtosFavoritos.length >
+                                                                0 && (
+                                                                <span className="bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                                                    {produtosFavoritos.length >
+                                                                    99
+                                                                        ? "99+"
+                                                                        : produtosFavoritos.length}
+                                                                </span>
+                                                            )}
                                                     </button>
                                                 )}
                                             </div>
@@ -176,6 +225,15 @@ export const NavBar: React.FC = () => {
                 <PerfilModal
                     isOpen={showPerfilModal}
                     onClose={() => setShowPerfilModal(false)}
+                />
+
+                {/* Modal de Favoritos */}
+                <FavoritosProdutoModal
+                    open={showFavoritosModal}
+                    onClose={setShowFavoritosModal}
+                    produtos={produtosFavoritos}
+                    onRemove={removerDosFavoritos}
+                    onAddToCart={adicionarAoCarrinho}
                 />
             </header>
         );

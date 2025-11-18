@@ -9,10 +9,8 @@ import {
 } from "react";
 import { ClipLoader } from "react-spinners";
 import { AuthContext } from "../../../contexts/AuthContext";
-
 import type { Categoria } from "../../../models/Categoria";
 import type { Produto } from "../../../models/Produto";
-
 import { atualizar, buscar, cadastrar } from "../../../services/Service";
 import { ToastAlerta } from "../../../utils/ToastAlerta";
 
@@ -59,7 +57,7 @@ export default function ProdutoEditModal({
                     nome: "",
                     foto: "",
                     preco: 0,
-                    quantidade: 0,
+                    quantidade: 1,
                     descricao: "",
                     categoria: undefined as any,
                     usuario: { id: usuario.id } as any,
@@ -262,20 +260,40 @@ export default function ProdutoEditModal({
                             />
                         </div>
 
-                        {/* Quantidade */}
+                        {/* Disponibilidade */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Quantidade em estoque
+                                Disponibilidade
                             </label>
-                            <input
-                                type="number"
-                                name="quantidade"
-                                min="0"
-                                value={produtoEmEdicao.quantidade}
-                                onChange={handleNumberChange}
-                                required
-                                className="w-full px-4 py-2 border rounded-lg"
-                            />
+
+                            <select
+                                value={
+                                    produtoEmEdicao.quantidade >= 1
+                                        ? "disponivel"
+                                        : "indisponivel"
+                                }
+                                onChange={(e) => {
+                                    const value = e.target.value;
+
+                                    setProdutoEmEdicao((prev) =>
+                                        prev
+                                            ? {
+                                                  ...prev,
+                                                  quantidade:
+                                                      value === "disponivel"
+                                                          ? 1
+                                                          : 0,
+                                              }
+                                            : prev
+                                    );
+                                }}
+                                className="w-full px-4 py-2 border rounded-lg bg-white"
+                            >
+                                <option value="disponivel">Disponível</option>
+                                <option value="indisponivel">
+                                    Indisponível
+                                </option>
+                            </select>
                         </div>
 
                         {/* Categoria */}
