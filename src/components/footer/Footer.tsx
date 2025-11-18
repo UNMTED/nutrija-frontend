@@ -41,14 +41,6 @@ function Footer() {
                                     Cardápio
                                 </a>
                             </li>
-                            <li>
-                                <a
-                                    href="/sobre"
-                                    className="text-sm text-gray-600 hover:text-nutri-green-dark transition-colors"
-                                >
-                                    Sobre Nós
-                                </a>
-                            </li>
                         </ul>
                     </div>
 
@@ -58,7 +50,7 @@ function Footer() {
                         </h3>
                         <div className="flex gap-3">
                             <a
-                                href="https://www.linkedin.com/in/seu_usuario"
+                                href="https://www.linkedin.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:text-nutri-green-dark hover:border-nutri-green-light hover:shadow-lg hover:scale-110 transition-all"
@@ -70,7 +62,7 @@ function Footer() {
                                 />
                             </a>
                             <a
-                                href="https://www.instagram.com/seu_usuario"
+                                href="https://www.instagram.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-300 hover:shadow-lg hover:scale-110 transition-all"
