@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
     Dialog,
     DialogContent,
@@ -5,6 +6,11 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Package, ShoppingBag, X } from "@phosphor-icons/react";
+=======
+import { Check, Package, ShoppingBag, X } from "@phosphor-icons/react";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
+>>>>>>> d70bd57a3878f53a5efd4d94904b674693dc8150
 import { type Produto } from "../../../models/Produto";
 
 interface DetalhesProdutoModalProps {
@@ -14,12 +20,17 @@ interface DetalhesProdutoModalProps {
     add: () => void;
 }
 
+<<<<<<< HEAD
 const DetalhesProdutoModal = ({
     open,
     onClose,
     produto,
     add,
 }: DetalhesProdutoModalProps) => {
+=======
+const DetalhesProdutoModal = ({ produto, add }: DetalhesProdutoModalProps) => {
+    const { usuario } = useContext(AuthContext); // Adicionando AuthContext
+>>>>>>> d70bd57a3878f53a5efd4d94904b674693dc8150
     const disponivel = produto.quantidade > 0;
 
     return (
@@ -43,13 +54,27 @@ const DetalhesProdutoModal = ({
                                 weight="bold"
                                 className="sm:w-4 sm:h-4"
                             />
+<<<<<<< HEAD
                             <span className="truncate">
                                 {produto.categoria.nome}
                             </span>
+=======
+                            
+
+                            {!disponivel && (
+                                <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm flex items-center justify-center">
+                                    <div className="text-center">
+                                        <X size={48} weight="bold" className="text-white mx-auto mb-2" />
+                                        <span className="text-white font-bold text-lg">Produto Indisponível</span>
+                                    </div>
+                                </div>
+                            )}
+>>>>>>> d70bd57a3878f53a5efd4d94904b674693dc8150
                         </div>
                     )}
                 </div>
 
+<<<<<<< HEAD
                 {/* Conteúdo */}
                 <div className="overflow-y-auto flex-1 scrollbar-thin pb-10">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-8 p-4 sm:p-5 md:p-6 lg:p-8">
@@ -75,10 +100,49 @@ const DetalhesProdutoModal = ({
                                             </span>
                                         </div>
                                     </div>
+=======
+                    {/* Informações do Produto */}
+                    <div className="space-y-6">
+
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 pb-6 border-b border-neutral-100">
+                            <div className="space-y-1">
+                                <p className="text-sm text-neutral-500 font-medium">Preço</p>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-base text-neutral-400">R$</span>
+                                    <span className="text-4xl sm:text-5xl font-black text-primary-600">
+                                        {Number(produto.preco).toFixed(2).split('.')[0]}
+                                    </span>
+                                    <span className="text-xl text-neutral-400">
+                                        ,{Number(produto.preco).toFixed(2).split('.')[1]}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div 
+                                className={`
+                                    inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg
+                                    ${disponivel 
+                                        ? 'bg-gradient-to-br from-primary-400 to-primary-600 text-white' 
+                                        : 'bg-neutral-200 text-neutral-700'
+                                    }
+                                `}
+                            >
+                                {disponivel ? (
+                                    <>
+                                        <Check size={18} weight="bold" />
+                                        <span>Disponível</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <X size={18} weight="bold" />
+                                        <span>Indisponível</span>
+                                    </>
+>>>>>>> d70bd57a3878f53a5efd4d94904b674693dc8150
                                 )}
                             </div>
                         </div>
 
+<<<<<<< HEAD
                         {/* Informações */}
                         <div className="space-y-4 sm:space-y-5 md:space-y-6">
                             {/* Preço */}
@@ -160,11 +224,52 @@ const DetalhesProdutoModal = ({
                                             disponivel
                                                 ? "bg-linear-to-br from-primary-500 to-primary-600 text-white hover:scale-105 active:scale-95"
                                                 : "bg-neutral-200 text-neutral-500 cursor-not-allowed"
+=======
+                        <div className="space-y-3">
+                            <h3 className="text-lg font-bold text-neutral-800 flex items-center gap-2">
+                                <div className="w-1 h-6 bg-primary-500 rounded-full" />
+                                Descrição
+                            </h3>
+                            <p className="text-base text-neutral-600 leading-relaxed whitespace-pre-wrap">
+                                {produto.descricao || "Nenhuma descrição disponível para este produto."}
+                            </p>
+                        </div>
+
+                        {(produto.categoria || produto.usuario) && (
+                            <div className="pt-4 border-t border-neutral-100 grid grid-cols-2 gap-4">
+                                {produto.categoria && (
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-bold text-neutral-500 uppercase tracking-wide">Categoria</p>
+                                        <p className="text-sm font-semibold text-neutral-800">{produto.categoria.nome}</p>
+                                    </div>
+                                )}
+                                
+                                {produto.usuario && (
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-bold text-neutral-500 uppercase tracking-wide">Cadastrado por</p>
+                                        <p className="text-sm font-semibold text-neutral-800">{produto.usuario.nome}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {usuario.role !== "admin" && (
+                            <div className="pt-6">
+                                <button
+                                    className={`
+                                        w-full py-4 px-6 rounded-xl text-base font-bold
+                                        flex items-center justify-center gap-3
+                                        shadow-lg transition-all duration-300
+                                        ${disponivel
+                                            ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 hover:scale-105 active:scale-95'
+                                            : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
+>>>>>>> d70bd57a3878f53a5efd4d94904b674693dc8150
                                         }
                                     `}
                                     onClick={add}
                                     disabled={!disponivel}
                                 >
+<<<<<<< HEAD
                                     <ShoppingBag
                                         size={18}
                                         weight="bold"
@@ -178,6 +283,14 @@ const DetalhesProdutoModal = ({
                                 </button>
                             </div>
                         </div>
+=======
+                                    <ShoppingBag size={22} weight="bold" />
+                                    {disponivel ? "Adicionar ao Carrinho" : "Produto Indisponível"}
+                                </button>
+
+                            </div>
+                        )}
+>>>>>>> d70bd57a3878f53a5efd4d94904b674693dc8150
                     </div>
                 </div>
             </DialogContent>
